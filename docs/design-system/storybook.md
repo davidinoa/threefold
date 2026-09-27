@@ -8,7 +8,7 @@ An earlier setup ran Storybook on `@storybook/tanstack-react`, pinned to an olde
 - So Storybook runs on plain `@storybook/react-vite`.
 - It has a Vite config of its own that loads only React and Tailwind. Start's and Cloudflare's plugins never load in Storybook, and no TanStack package gets pinned.
 
-This setup hasn't run in this exact form yet. The Storybook spike (system design §6, question 5) checks it at setup.
+The Storybook spike (system design §6, question 5) ran this setup on 2026-09-27. It builds and runs its tests as described here, with Vitest on 4 (see the versions below).
 
 ## Versions to start from
 
@@ -17,12 +17,26 @@ This setup hasn't run in this exact form yet. The Storybook spike (system design
 | storybook, @storybook/react-vite, @storybook/addon-docs, @storybook/addon-a11y, @storybook/addon-themes, @storybook/addon-vitest | 10.6.0 |
 | storybook-addon-pseudo-states | 10.6.0 |
 | @fontsource-variable/figtree, kalnia, shantell-sans | 5.3.0 |
+| vitest, @vitest/browser-playwright | 4.1: `@storybook/addon-vitest` 10.6 supports Vitest 3 and 4 only |
+| playwright | 1.63 |
 
 React, Tailwind, motion, and Vite come from the app, at whatever versions the setup pins.
 
 ## Setup
 
-Run `pnpm create storybook@latest`, choose React with Vite, and delete the example stories it adds in `src/stories/`.
+Run the installer without its prompts:
+
+```bash
+pnpm dlx create-storybook@10.6.0 --type react --builder vite --features docs test a11y --no-dev --disable-telemetry
+```
+
+Then undo what it adds that this setup doesn't use:
+
+- **Remove** the example stories in `src/stories/`, the Chromatic addon (`@chromatic-com/storybook`), and `@vitest/coverage-v8`.
+- **Revert** its edit to the app's `vite.config.ts`. The story tests get a `vitest.config.ts` of their own (under "Stories are tests"), so they never load Start's or Cloudflare's plugins.
+- **Add** `@storybook/addon-themes` and `storybook-addon-pseudo-states`, which it doesn't install.
+
+It also installs Playwright's Chromium, which the Vitest addon runs the stories in.
 
 ## .storybook/main.ts
 
@@ -42,9 +56,10 @@ const config: StorybookConfig = {
   core: {
     builder: {
       name: "@storybook/builder-vite",
-      // Storybook's own Vite config: React and Tailwind only. The spike confirms which folder this path resolves from.
+      // Storybook's own Vite config: React and Tailwind only. The path resolves from the project root.
       options: { viteConfigPath: ".storybook/vite.config.ts" },
     },
+    disableTelemetry: true,
   },
 }
 export default config
@@ -166,7 +181,33 @@ export const FocusVisible: Story = { parameters: { pseudo: { focusVisible: true 
 ## Stories are tests
 
 - **How they run:** Storybook's Vitest addon runs every story as a test, in Vitest's browser mode on Playwright's Chromium. CI's `test` job installs Chromium first, with `pnpm exec playwright install --with-deps chromium`.
-- **Accessibility:** with `a11y: { test: "error" }`, an accessibility violation fails the story.
+- **Accessibility:** with `a11y: { test: "error" }`, an accessibility violation fails the story. In the spike, a button with no name failed on axe's `button-name` rule.
+- **Their own config:** a root `vitest.config.ts` merges `.storybook/vite.config.ts`, so the tests load the same React and Tailwind as Storybook, and never the app's `vite.config.ts`. Other test projects join its `projects` list.
+
+```ts
+// vitest.config.ts
+import { storybookTest } from "@storybook/addon-vitest/vitest-plugin"
+import { playwright } from "@vitest/browser-playwright"
+import { configDefaults, defineConfig, mergeConfig } from "vitest/config"
+
+import storybookVite from "./.storybook/vite.config"
+
+export default defineConfig({
+  test: {
+    projects: [
+      mergeConfig(storybookVite, {
+        plugins: [storybookTest({ configDir: ".storybook" })],
+        test: {
+          name: "storybook",
+          // Vitest searches hidden folders, so without this it would also run the copies in agents' worktrees.
+          exclude: [...configDefaults.exclude, ".claude/**"],
+          browser: { enabled: true, headless: true, provider: playwright(), instances: [{ browser: "chromium" }] },
+        },
+      }),
+    ],
+  },
+})
+```
 
 ## Lint and types
 
