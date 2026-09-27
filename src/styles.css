@@ -1,130 +1,816 @@
+/*
+ * Threefold · styles.css (Tailwind v4 + shadcn/ui, for TanStack Start)
+ *
+ * Save as src/styles.css: the root route links it (import appCss from "../styles.css?url"), and
+ * .storybook/preview.tsx imports the same file.
+ * Day is :root and Night is .dark. The ThemeProvider’s script (src/components/theme-provider.tsx) sets the class
+ * on <html> before first paint.
+ * Colors are OKLCH, converted from the hex values in the design files. shadcn’s roles are mapped onto
+ * Threefold’s paper and ink, so stock components (Dialog, Drawer, Switch, Slider…) come out on-brand;
+ * Threefold’s own names (paper, ink, highlight, the eight category inks) sit beside them.
+ *
+ * Fonts are self-hosted with Fontsource and imported below:
+ *   pnpm add @fontsource-variable/figtree @fontsource-variable/kalnia @fontsource-variable/shantell-sans
+ * Kalnia needs its width axis (wdth.css) and Shantell Sans needs BNCE and INFM, which only full.css has.
+ */
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import "shadcn/tailwind.css"; /* data-open / data-closed variants shadcn components expect (drop after `shadcn eject`) */
+@import "@fontsource-variable/figtree"; /* Figtree Variable: wght 300–900 */
+@import "@fontsource-variable/kalnia/wdth.css"; /* Kalnia Variable: wdth 100–125, wght 100–700 */
+@import "@fontsource-variable/shantell-sans/full.css"; /* Shantell Sans Variable: wght, BNCE, INFM, SPAC */
 
 @custom-variant dark (&:is(.dark *));
 
+/* ------------------------------------------------------------------ Day */
+:root {
+  --radius: 1.125rem;
+
+  --background: oklch(0.966 0.013 82.4); /* paper */
+  --foreground: oklch(0.249 0.061 285.2); /* ink */
+  --card: oklch(0.992 0.009 84.6); /* card stock */
+  --card-foreground: oklch(0.249 0.061 285.2);
+  --popover: oklch(0.992 0.009 84.6);
+  --popover-foreground: oklch(0.249 0.061 285.2);
+  --primary: oklch(0.249 0.061 285.2); /* ink buttons */
+  --primary-foreground: oklch(0.966 0.013 82.4);
+  --secondary: oklch(0.937 0.019 80.1); /* wells, quiet cells */
+  --secondary-foreground: oklch(0.249 0.061 285.2);
+  --muted: oklch(0.937 0.019 80.1);
+  --muted-foreground: oklch(0.45 0.046 284.4); /* ink 2: 6.8:1 */
+  --accent: oklch(0.945 0.193 120); /* the highlighter */
+  --accent-foreground: oklch(0.249 0.061 285.2);
+  --destructive: oklch(
+    0.46 0.12 357.7
+  ); /* errors only; taking things out is an outline button */
+  --border: oklch(0.249 0.061 285.2 / 14%);
+  --input: oklch(0.249 0.061 285.2 / 32%);
+  --ring: oklch(0.249 0.061 285.2); /* focus: ink outline + highlighter halo */
+  --chart-1: var(--people); /* People */
+  --chart-2: var(--home); /* Home */
+  --chart-3: var(--talents); /* Talents */
+  --chart-4: var(--luck); /* Luck */
+  --chart-5: var(--body); /* Body */
+  --sidebar: oklch(0.992 0.009 84.6);
+  --sidebar-foreground: oklch(0.249 0.061 285.2);
+  --sidebar-primary: oklch(0.249 0.061 285.2);
+  --sidebar-primary-foreground: oklch(0.966 0.013 82.4);
+  --sidebar-accent: oklch(0.945 0.193 120);
+  --sidebar-accent-foreground: oklch(0.249 0.061 285.2);
+  --sidebar-border: oklch(0.249 0.061 285.2 / 14%);
+  --sidebar-ring: oklch(0.249 0.061 285.2);
+
+  /* Threefold */
+  --paper-2: oklch(0.937 0.019 80.1); /* shaded paper, wells */
+  --ink-2: oklch(0.45 0.046 284.4); /* secondary text */
+  --highlight: oklch(
+    0.945 0.193 120
+  ); /* fills: selected chips, the tab swash */
+  --highlight-pop: oklch(
+    0.945 0.193 120
+  ); /* print shadows and the focus halo */
+  --glass: oklch(0.951 0.01 189.1); /* the jar */
+  --tape: oklch(0.927 0.047 89.6); /* jar labels */
+  --cork: oklch(0.764 0.089 68.6); /* paper objects keep their inks at night */
+  --cork-dark: oklch(0.614 0.087 64.4);
+  --wood: oklch(0.734 0.104 62.2); /* the shelf */
+  --wood-dark: oklch(0.585 0.102 57.2);
+  --nightlight: oklch(0.925 0.083 86.1); /* the glow inside the jar at night */
+  --paper-ink: oklch(
+    0.249 0.061 285.2
+  ); /* ink on paper objects (strips, stars): never flips */
+  --halo: oklch(
+    0.945 0.193 120 / 85%
+  ); /* the focus halo around the ink outline */
+  --shadow-color: oklch(0.249 0.061 285.2);
+
+  /* the eight category inks: base (star fill, strips) · shade · deep (text-safe on light) · light (tints) · glow (night stars) · star (base by day, glow by night) */
+  /* People · Peony */
+  --people: oklch(0.84 0.097 358);
+  --people-shade: oklch(0.71 0.109 358);
+  --people-deep: oklch(0.46 0.12 357.7);
+  --people-light: oklch(0.94 0.031 357.8);
+  --people-glow: oklch(0.879 0.069 357.8);
+  --people-star: oklch(0.84 0.097 358);
+  /* Home · Apricot */
+  --home: oklch(0.844 0.089 41.2);
+  --home-shade: oklch(0.715 0.11 41.4);
+  --home-deep: oklch(0.46 0.12 42.1);
+  --home-light: oklch(0.94 0.03 40.9);
+  --home-glow: oklch(0.88 0.065 42.1);
+  --home-star: oklch(0.844 0.089 41.2);
+  /* Talents · Lilac */
+  --talents: oklch(0.81 0.125 317.4);
+  --talents-shade: oklch(0.679 0.119 317.4);
+  --talents-deep: oklch(0.46 0.12 317.8);
+  --talents-light: oklch(0.94 0.041 318.4);
+  --talents-glow: oklch(0.879 0.091 317.3);
+  --talents-star: oklch(0.81 0.125 317.4);
+  /* Luck · Clover */
+  --luck: oklch(0.87 0.13 120.1);
+  --luck-shade: oklch(0.74 0.124 119.9);
+  --luck-deep: oklch(0.46 0.108 119.8);
+  --luck-light: oklch(0.94 0.041 120.8);
+  --luck-glow: oklch(0.879 0.13 120.1);
+  --luck-star: oklch(0.87 0.13 120.1);
+  /* Body · Lagoon */
+  --body: oklch(0.851 0.105 199.9);
+  --body-shade: oklch(0.719 0.1 200.2);
+  --body-deep: oklch(0.461 0.078 199.6);
+  --body-light: oklch(0.94 0.04 200.3);
+  --body-glow: oklch(0.88 0.13 199.9);
+  --body-star: oklch(0.851 0.105 199.9);
+  /* Work · Marigold */
+  --work: oklch(0.87 0.124 80);
+  --work-shade: oklch(0.739 0.123 79.9);
+  --work-deep: oklch(0.46 0.094 80.2);
+  --work-light: oklch(0.941 0.04 79.5);
+  --work-glow: oklch(0.879 0.112 79.8);
+  --work-star: oklch(0.87 0.124 80);
+  /* Knowledge · Cornflower */
+  --knowledge: oklch(0.801 0.101 257.8);
+  --knowledge-shade: oklch(0.67 0.099 257.5);
+  --knowledge-deep: oklch(0.461 0.12 258);
+  --knowledge-light: oklch(0.939 0.028 258.4);
+  --knowledge-glow: oklch(0.879 0.058 258.1);
+  --knowledge-star: oklch(0.801 0.101 257.8);
+  /* Abundance · Jade */
+  --abundance: oklch(0.85 0.115 158);
+  --abundance-shade: oklch(0.719 0.109 157.9);
+  --abundance-deep: oklch(0.459 0.106 157.8);
+  --abundance-light: oklch(0.94 0.04 157.8);
+  --abundance-glow: oklch(0.881 0.13 158.1);
+  --abundance-star: oklch(0.85 0.115 158);
+}
+
+/* ------------------------------------------------------------------ Night */
+.dark {
+  --background: oklch(0.191 0.044 281.4); /* night */
+  --foreground: oklch(0.93 0.02 84.6); /* moon */
+  --card: oklch(0.242 0.053 281.7); /* card stock */
+  --card-foreground: oklch(0.93 0.02 84.6);
+  --popover: oklch(0.242 0.053 281.7);
+  --popover-foreground: oklch(0.93 0.02 84.6);
+  --primary: oklch(0.93 0.02 84.6); /* ink buttons */
+  --primary-foreground: oklch(0.191 0.044 281.4);
+  --secondary: oklch(0.242 0.053 281.7); /* wells, quiet cells */
+  --secondary-foreground: oklch(0.93 0.02 84.6);
+  --muted: oklch(0.242 0.053 281.7);
+  --muted-foreground: oklch(0.78 0.03 285.7); /* ink 2: 9.2:1 */
+  --accent: oklch(0.41 0.069 112.3); /* the highlighter */
+  --accent-foreground: oklch(0.93 0.02 84.6);
+  --destructive: oklch(
+    0.879 0.069 357.8
+  ); /* errors only; taking things out is an outline button */
+  --border: oklch(0.93 0.02 84.6 / 14%);
+  --input: oklch(0.93 0.02 84.6 / 32%);
+  --ring: oklch(0.93 0.02 84.6); /* focus: ink outline + highlighter halo */
+  --chart-1: var(--people); /* People */
+  --chart-2: var(--home); /* Home */
+  --chart-3: var(--talents); /* Talents */
+  --chart-4: var(--luck); /* Luck */
+  --chart-5: var(--body); /* Body */
+  --sidebar: oklch(0.242 0.053 281.7);
+  --sidebar-foreground: oklch(0.93 0.02 84.6);
+  --sidebar-primary: oklch(0.93 0.02 84.6);
+  --sidebar-primary-foreground: oklch(0.191 0.044 281.4);
+  --sidebar-accent: oklch(0.41 0.069 112.3);
+  --sidebar-accent-foreground: oklch(0.93 0.02 84.6);
+  --sidebar-border: oklch(0.93 0.02 84.6 / 14%);
+  --sidebar-ring: oklch(0.93 0.02 84.6);
+
+  --paper-2: oklch(0.242 0.053 281.7); /* shaded paper, wells */
+  --ink-2: oklch(0.78 0.03 285.7); /* secondary text */
+  --highlight: oklch(
+    0.41 0.069 112.3
+  ); /* fills: selected chips, the tab swash */
+  --highlight-pop: oklch(
+    0.821 0.152 119.5
+  ); /* print shadows and the focus halo */
+  --glass: oklch(0.326 0.079 277.2); /* the jar */
+  --tape: oklch(0.369 0.07 283.6); /* jar labels */
+  --cork: oklch(0.764 0.089 68.6); /* paper objects keep their inks at night */
+  --cork-dark: oklch(0.614 0.087 64.4);
+  --wood: oklch(0.734 0.104 62.2); /* the shelf */
+  --wood-dark: oklch(0.585 0.102 57.2);
+  --nightlight: oklch(0.925 0.083 86.1); /* the glow inside the jar at night */
+  --paper-ink: oklch(
+    0.249 0.061 285.2
+  ); /* ink on paper objects (strips, stars): never flips */
+  --halo: oklch(
+    0.945 0.193 120 / 35%
+  ); /* the focus halo around the ink outline */
+  --shadow-color: oklch(0 0 0);
+
+  /* People · Peony */
+  --people: oklch(0.84 0.097 358);
+  --people-shade: oklch(0.508 0.057 339.8);
+  --people-deep: oklch(0.879 0.069 357.8);
+  --people-light: oklch(0.31 0.044 309.8);
+  --people-glow: oklch(0.879 0.069 357.8);
+  --people-star: oklch(0.879 0.069 357.8);
+  /* Home · Apricot */
+  --home: oklch(0.844 0.089 41.2);
+  --home-shade: oklch(0.51 0.041 18.6);
+  --home-deep: oklch(0.88 0.065 42.1);
+  --home-light: oklch(0.311 0.029 318.9);
+  --home-glow: oklch(0.88 0.065 42.1);
+  --home-star: oklch(0.88 0.065 42.1);
+  /* Talents · Lilac */
+  --talents: oklch(0.81 0.125 317.4);
+  --talents-shade: oklch(0.493 0.081 309.4);
+  --talents-deep: oklch(0.879 0.091 317.3);
+  --talents-light: oklch(0.306 0.056 296.3);
+  --talents-glow: oklch(0.879 0.091 317.3);
+  --talents-star: oklch(0.879 0.091 317.3);
+  /* Luck · Clover */
+  --luck: oklch(0.87 0.13 120.1);
+  --luck-shade: oklch(0.523 0.053 122.8);
+  --luck-deep: oklch(0.879 0.13 120.1);
+  --luck-light: oklch(0.314 0.008 240.1);
+  --luck-glow: oklch(0.879 0.13 120.1);
+  --luck-star: oklch(0.879 0.13 120.1);
+  /* Body · Lagoon */
+  --body: oklch(0.851 0.105 199.9);
+  --body-shade: oklch(0.514 0.061 217);
+  --body-deep: oklch(0.88 0.13 199.9);
+  --body-light: oklch(0.314 0.042 249.3);
+  --body-glow: oklch(0.88 0.13 199.9);
+  --body-star: oklch(0.88 0.13 199.9);
+  /* Work · Marigold */
+  --work: oklch(0.87 0.124 80);
+  --work-shade: oklch(0.522 0.052 72.8);
+  --work-deep: oklch(0.879 0.112 79.8);
+  --work-light: oklch(0.315 0.013 346.2);
+  --work-glow: oklch(0.879 0.112 79.8);
+  --work-star: oklch(0.879 0.112 79.8);
+  /* Knowledge · Cornflower */
+  --knowledge: oklch(0.801 0.101 257.8);
+  --knowledge-shade: oklch(0.49 0.069 263.6);
+  --knowledge-deep: oklch(0.879 0.058 258.1);
+  --knowledge-light: oklch(0.305 0.053 272.6);
+  --knowledge-glow: oklch(0.879 0.058 258.1);
+  --knowledge-star: oklch(0.879 0.058 258.1);
+  /* Abundance · Jade */
+  --abundance: oklch(0.85 0.115 158);
+  --abundance-shade: oklch(0.511 0.049 175.5);
+  --abundance-deep: oklch(0.881 0.13 158.1);
+  --abundance-light: oklch(0.312 0.027 237.9);
+  --abundance-glow: oklch(0.881 0.13 158.1);
+  --abundance-star: oklch(0.881 0.13 158.1);
+}
+
+/* ------------------------------------------------------------------ Tailwind theme */
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: "Geist Variable", sans-serif;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Threefold names for the same surfaces, plus paper objects */
+  --color-paper: var(--background);
+  --color-ink: var(--foreground);
+  --color-paper-2: var(--paper-2);
+  --color-ink-2: var(--ink-2);
+  --color-highlight: var(--highlight);
+  --color-highlight-pop: var(--highlight-pop);
+  --color-glass: var(--glass);
+  --color-tape: var(--tape);
+  --color-cork: var(--cork);
+  --color-cork-dark: var(--cork-dark);
+  --color-wood: var(--wood);
+  --color-wood-dark: var(--wood-dark);
+  --color-nightlight: var(--nightlight);
+  --color-paper-ink: var(--paper-ink);
+  --color-halo: var(--halo);
+
+  /* the eight categories: bg-talents-light text-talents-deep fill-talents-star … */
+  --color-people: var(--people);
+  --color-people-shade: var(--people-shade);
+  --color-people-deep: var(--people-deep);
+  --color-people-light: var(--people-light);
+  --color-people-glow: var(--people-glow);
+  --color-people-star: var(--people-star);
+  --color-home: var(--home);
+  --color-home-shade: var(--home-shade);
+  --color-home-deep: var(--home-deep);
+  --color-home-light: var(--home-light);
+  --color-home-glow: var(--home-glow);
+  --color-home-star: var(--home-star);
+  --color-talents: var(--talents);
+  --color-talents-shade: var(--talents-shade);
+  --color-talents-deep: var(--talents-deep);
+  --color-talents-light: var(--talents-light);
+  --color-talents-glow: var(--talents-glow);
+  --color-talents-star: var(--talents-star);
+  --color-luck: var(--luck);
+  --color-luck-shade: var(--luck-shade);
+  --color-luck-deep: var(--luck-deep);
+  --color-luck-light: var(--luck-light);
+  --color-luck-glow: var(--luck-glow);
+  --color-luck-star: var(--luck-star);
+  --color-body: var(--body);
+  --color-body-shade: var(--body-shade);
+  --color-body-deep: var(--body-deep);
+  --color-body-light: var(--body-light);
+  --color-body-glow: var(--body-glow);
+  --color-body-star: var(--body-star);
+  --color-work: var(--work);
+  --color-work-shade: var(--work-shade);
+  --color-work-deep: var(--work-deep);
+  --color-work-light: var(--work-light);
+  --color-work-glow: var(--work-glow);
+  --color-work-star: var(--work-star);
+  --color-knowledge: var(--knowledge);
+  --color-knowledge-shade: var(--knowledge-shade);
+  --color-knowledge-deep: var(--knowledge-deep);
+  --color-knowledge-light: var(--knowledge-light);
+  --color-knowledge-glow: var(--knowledge-glow);
+  --color-knowledge-star: var(--knowledge-star);
+  --color-abundance: var(--abundance);
+  --color-abundance-shade: var(--abundance-shade);
+  --color-abundance-deep: var(--abundance-deep);
+  --color-abundance-light: var(--abundance-light);
+  --color-abundance-glow: var(--abundance-glow);
+  --color-abundance-star: var(--abundance-star);
+
+  /* radius: shadcn’s scale on an 18px base. sm ≈ 11 (day cells) · md ≈ 14 (chips) · lg 18 (cards) · xl ≈ 25 (sheets, dialogs) */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* fonts: Fontsource’s family names (imported at the top), then fallbacks */
+  --font-sans:
+    "Figtree Variable", "Figtree", "Avenir Next", "Segoe UI", ui-sans-serif,
+    system-ui, sans-serif;
+  --font-display:
+    "Kalnia Variable", "Kalnia", "Iowan Old Style", "Palatino Linotype",
+    Georgia, serif;
+  --font-hand:
+    "Shantell Sans Variable", "Shantell Sans", "Segoe Print", "Bradley Hand",
+    cursive;
+  --font-hand--font-variation-settings:
+    "INFM" 62, "BNCE" 24; /* informal and a little bouncy, still legible at 17px */
+  --font-mono:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+@theme {
+  /* springs, as CSS easing curves (fire-and-forget CSS). Interruptible motion uses the same k/c in JS (motion: { type: "spring", stiffness, damping }). */
+  --ease-spring-snappy: linear(
+    0,
+    0.11,
+    0.327,
+    0.547,
+    0.733,
+    0.864,
+    0.95,
+    0.998,
+    1.019,
+    1.025,
+    1.023,
+    1.018,
+    1.013,
+    1.008,
+    1
+  ); /* k 700 · c 40 · settles in 280ms */
+  --ease-spring-bouncy: linear(
+    0,
+    0.15,
+    0.476,
+    0.817,
+    1.085,
+    1.229,
+    1.256,
+    1.205,
+    1.118,
+    1.031,
+    0.968,
+    0.938,
+    0.935,
+    0.951,
+    0.974,
+    0.996,
+    1.01,
+    1.017,
+    1.016,
+    1.011,
+    1.005,
+    1,
+    0.997,
+    0.996,
+    1
+  ); /* k 520 · c 18 · settles in 620ms */
+  --ease-spring-soft: linear(
+    0,
+    0.069,
+    0.222,
+    0.399,
+    0.567,
+    0.71,
+    0.821,
+    0.902,
+    0.958,
+    0.993,
+    1.012,
+    1.021,
+    1.023,
+    1.021,
+    1.018,
+    1.014,
+    1.01,
+    1.007,
+    1
+  ); /* k 170 · c 20 · settles in 570ms */
+  --ease-spring-floaty: linear(
+    0,
+    0.086,
+    0.276,
+    0.495,
+    0.697,
+    0.857,
+    0.969,
+    1.037,
+    1.069,
+    1.076,
+    1.069,
+    1.054,
+    1.037,
+    1.022,
+    1.01,
+    1.002,
+    0.997,
+    0.995,
+    0.994,
+    0.995,
+    1
+  ); /* k 90 · c 12 · settles in 960ms */
+  --ease-spring-wobble: linear(
+    0,
+    0.411,
+    1.144,
+    1.55,
+    1.421,
+    1.013,
+    0.716,
+    0.722,
+    0.935,
+    1.134,
+    1.173,
+    1.068,
+    0.944,
+    0.899,
+    0.943,
+    1.017,
+    1.056,
+    1.041,
+    1,
+    0.971,
+    0.972,
+    0.995,
+    1.014,
+    1.017,
+    1.006,
+    0.994,
+    0.99,
+    0.995,
+    1.002,
+    1.006,
+    1
+  ); /* k 500 · c 8 · settles in 1320ms */
+
+  /* type: display sizes on top of Tailwind's scale */
+  --text-date: 6rem;
+  --text-date--line-height: 0.8;
+  --text-hero: 4rem;
+  --text-hero--line-height: 0.92;
+  --text-title: 2.875rem;
+  --text-title--line-height: 0.95;
+  --text-prompt: 1.875rem;
+  --text-prompt--line-height: 1.08;
+  --text-kicker: 0.75rem;
+  --text-kicker--line-height: 1.2;
+  --text-kicker--letter-spacing: 0.16em;
+
+  /* shadows: a printed offset in highlighter, and soft paper lifts */
+  --shadow-print: 4px 4px 0 var(--highlight-pop);
+  --shadow-print-sm: 3px 3px 0 var(--highlight-pop);
+  --shadow-print-lg: 5px 5px 0 var(--highlight-pop); /* hover, pointer: fine */
+  --shadow-print-cat: 4px 4px 0 var(--cat-star, var(--highlight-pop)); /* inside a data-cat subtree */
+  --shadow-card-cat: 5px 5px 0 var(--cat-star, var(--highlight-pop)); /* the Review writing card */
+  --shadow-print-focus:
+    4px 4px 0 var(--highlight-pop), 0 0 0 9px var(--halo); /* keeps the print while focused */
+  --shadow-focus: 0 0 0 7px var(--halo);
+  --shadow-paper:
+    0 1px 0 color-mix(in oklab, var(--shadow-color) 6%, transparent),
+    0 12px 28px -18px color-mix(in oklab, var(--shadow-color) 35%, transparent);
+  --shadow-sheet: 0 -18px 30px -24px
+    color-mix(in oklab, var(--shadow-color) 50%, transparent);
+  --shadow-float: 0 20px 40px -24px
+    color-mix(in oklab, var(--shadow-color) 70%, transparent);
+
+  /* motion */
+  --animate-slot-pop: slot-pop 620ms var(--ease-spring-bouncy) both;
+  --animate-wiggle: wiggle 360ms cubic-bezier(0.3, 0, 0.3, 1);
+  --animate-unroll: unroll 600ms var(--ease-spring-soft) both;
+  --animate-rise: rise 570ms var(--ease-spring-soft) both;
+  --animate-deal: deal 740ms var(--ease-spring-bouncy) backwards; /* stagger with animation-delay: calc(var(--k) * 60ms) */
+  --animate-crumple: crumple 380ms cubic-bezier(0.5, 0, 0.75, 0) both;
+  --animate-stamp: stamp 500ms cubic-bezier(0.2, 1.4, 0.4, 1) both; /* relative to the element's own rotate */
+  --animate-bump: bump 450ms var(--ease-spring-bouncy);
+  --animate-card-flip: card-flip 380ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  --animate-bar-grow: bar-grow 900ms var(--ease-spring-soft) both;
+  --animate-sand-drop: sand-drop 740ms var(--ease-spring-soft) both;
+  --animate-twinkle: twinkle 2.2s ease-in-out infinite;
+  --animate-breathe: breathe 5s ease-in-out infinite;
+
+  @keyframes slot-pop {
+    from {
+      transform: scale(0.2) rotate(-90deg);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-5px);
+    }
+    50% {
+      transform: translateX(4px);
+    }
+    75% {
+      transform: translateX(-2px);
+    }
+  }
+  @keyframes unroll {
+    from {
+      clip-path: inset(0 92% 0 0 round 4px);
+    }
+    to {
+      clip-path: inset(0 0 0 0 round 4px);
+    }
+  }
+  @keyframes rise {
+    from {
+      transform: translateY(110%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  @keyframes deal {
+    from {
+      opacity: 0;
+      transform: translateY(-60px) rotate(-6deg) scale(0.72);
+    }
+    30% {
+      opacity: 1;
+    }
+  }
+  @keyframes crumple {
+    to {
+      transform: translateY(34px) rotate(16deg) scale(0.35);
+      opacity: 0;
+    }
+  }
+  @keyframes stamp {
+    0% {
+      transform: rotate(-22deg) scale(2.4);
+      opacity: 0;
+    }
+    60% {
+      opacity: 1;
+    }
+    100% {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  @keyframes bump {
+    from {
+      transform: scale(1.08) translateY(-2px);
+    }
+  }
+  @keyframes card-flip {
+    0% {
+      transform: perspective(900px) rotateY(0);
+    }
+    45% {
+      transform: perspective(900px) rotateY(88deg);
+    }
+    55% {
+      transform: perspective(900px) rotateY(-88deg);
+    }
+    100% {
+      transform: perspective(900px) rotateY(0);
+    }
+  }
+  @keyframes bar-grow {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes sand-drop {
+    0% {
+      transform: translateY(-150px);
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    100% {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.25;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 0.78;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
+/* ------------------------------------------------------------------ Base */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground antialiased;
   }
-  html {
-    @apply font-sans;
+  ::selection {
+    background: var(--highlight);
+    color: var(--foreground);
+  }
+  /* Threefold's focus: an ink outline and a highlighter halo, on anything focusable */
+  :where(
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    summary,
+    [tabindex]
+  ):focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 7px var(--halo);
+  }
+  /* a subtree takes one category: bg-(--cat-light) text-(--cat-deep) fill-(--cat-star) */
+  [data-cat="people"] {
+    --cat: var(--people);
+    --cat-shade: var(--people-shade);
+    --cat-deep: var(--people-deep);
+    --cat-light: var(--people-light);
+    --cat-star: var(--people-star);
+  }
+  [data-cat="home"] {
+    --cat: var(--home);
+    --cat-shade: var(--home-shade);
+    --cat-deep: var(--home-deep);
+    --cat-light: var(--home-light);
+    --cat-star: var(--home-star);
+  }
+  [data-cat="talents"] {
+    --cat: var(--talents);
+    --cat-shade: var(--talents-shade);
+    --cat-deep: var(--talents-deep);
+    --cat-light: var(--talents-light);
+    --cat-star: var(--talents-star);
+  }
+  [data-cat="luck"] {
+    --cat: var(--luck);
+    --cat-shade: var(--luck-shade);
+    --cat-deep: var(--luck-deep);
+    --cat-light: var(--luck-light);
+    --cat-star: var(--luck-star);
+  }
+  [data-cat="body"] {
+    --cat: var(--body);
+    --cat-shade: var(--body-shade);
+    --cat-deep: var(--body-deep);
+    --cat-light: var(--body-light);
+    --cat-star: var(--body-star);
+  }
+  [data-cat="work"] {
+    --cat: var(--work);
+    --cat-shade: var(--work-shade);
+    --cat-deep: var(--work-deep);
+    --cat-light: var(--work-light);
+    --cat-star: var(--work-star);
+  }
+  [data-cat="knowledge"] {
+    --cat: var(--knowledge);
+    --cat-shade: var(--knowledge-shade);
+    --cat-deep: var(--knowledge-deep);
+    --cat-light: var(--knowledge-light);
+    --cat-star: var(--knowledge-star);
+  }
+  [data-cat="abundance"] {
+    --cat: var(--abundance);
+    --cat-shade: var(--abundance-shade);
+    --cat-deep: var(--abundance-deep);
+    --cat-light: var(--abundance-light);
+    --cat-star: var(--abundance-star);
+  }
+  /* reduced motion keeps the story: components swap moves for fades with motion-reduce:, this is the safety net */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ Utilities */
+
+/* press feedback for anything tappable: 0.94 on press, back on spring.snappy (Motion spec I) */
+@utility squish {
+  transition:
+    transform 280ms var(--ease-spring-snappy),
+    filter 90ms ease;
+  &:active {
+    transform: scale(0.94) translateY(1px);
+    transition-duration: 90ms;
+    transition-timing-function: cubic-bezier(0.3, 0, 0.5, 1);
+  }
+  /* reduced motion: no scale, the press darkens instead */
+  @media (prefers-reduced-motion: reduce) {
+    &:active {
+      transform: none;
+      filter: brightness(0.92);
+    }
+  }
+}
+
+/* big figures print twice, a few pixels off register, in the day's color: style="--riso: var(--talents)" */
+@utility riso {
+  text-shadow: 0.045em 0.037em 0 var(--riso, var(--highlight));
+  @variant dark {
+    text-shadow: 0.045em 0.037em 0
+      color-mix(in oklab, var(--riso, var(--highlight)) 70%, transparent);
+  }
+}
+
+/* uncoated paper: fine grain by day, tone-on-tone by night */
+@utility paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .11 0 0 0 0 .24 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23g)'/%3E%3C/svg%3E");
+  @variant dark {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .34 0 0 0 0 .78 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23g)'/%3E%3C/svg%3E");
   }
 }

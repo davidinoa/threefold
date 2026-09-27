@@ -77,6 +77,7 @@
         "no-shadow": "off",
         "react/no-unstable-nested-components": "off",
         "react/set-state-in-effect": "off",
+        "jsx-a11y/label-has-associated-control": "off",
         "jsx-a11y/prefer-tag-over-role": "off",
         "typescript/consistent-return": "off"
       }
