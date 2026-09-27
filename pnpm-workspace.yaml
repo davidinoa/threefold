@@ -4,6 +4,7 @@ allowBuilds:
   esbuild: true
   lightningcss: true
   unrs-resolver: true
+  workerd: true
   msw: false
 
 # oxlint borrows the router's and Storybook's lint rules. Their
