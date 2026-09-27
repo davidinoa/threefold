@@ -1475,6 +1475,10 @@ There's no separate browser tier for Dexie and the sync engine, because the end-
    - Check that `build-storybook` works with a Vite config of its own (`viteConfigPath`) that loads only React and Tailwind v4.
    - Check that Storybook's Vitest addon runs the stories as tests, and that accessibility errors fail them.
    - The draft setup pinned TanStack Router for `@storybook/tanstack-react` (storybookjs/storybook#36330). That pin no longer applies, because the stories don't use TanStack Router (2.9).
+   - **Answered at setup, on 2026-09-27: yes to both.**
+     - `build-storybook` loads only `.storybook/vite.config.ts`, never the app's `vite.config.ts`, and `viteConfigPath` resolves from the project root.
+     - The Vitest addon runs every story as a test in Chromium, and an accessibility violation fails its story.
+     - The addon supports Vitest 3 and 4 only, so the app stays on Vitest 4 until it supports 5.
 6. **Persistent storage** (with the service worker). *Why it matters:* a jar that was never kept has no other copy. Check whether `persist()` is granted on both test devices, in the browser and from the Home Screen.
 7. **Sync against D1's limits** (before sync). *Why it matters:* a sync that goes over a limit fails.
    - Confirm how batch statements count toward the 50-query limit, and size the push to fit. D1's docs don't say.
@@ -1665,6 +1669,7 @@ How changes are recorded:
 |---|---|---|---|
 | 2026-09-26 | all | First version | — |
 | 2026-09-27 | 1.2 (F-2), 4.4, 5.10 | The empty-line animation is a wiggle, so "nudge" means only the deferred notification. The domain's seam is one view per screen. Testing uses three seams: end to end, the jar's rules, and the server's API | — |
+| 2026-09-27 | 6 (question 5) | The Storybook spike ran at setup: Storybook builds on a Vite config of its own, and its Vitest addon runs the stories as tests that accessibility errors fail. Vitest stays on 4 until the addon supports 5 | — |
 
 ## Appendix A. Glossary
 
