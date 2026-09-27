@@ -44,6 +44,12 @@ pnpm exec playwright install chromium
 | `pnpm check`           | Checks the formatting without changing any file                                                    |
 | `pnpm typecheck`       | Type-checks with TypeScript 7                                                                      |
 
+## Commits and pull requests
+
+- **Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/),** such as `fix: keep the jar's lid on`. After `pnpm install`, a `commit-msg` hook checks each one with commitlint.
+- **No commit credits an AI agent.** The hook rejects `Co-authored-by` trailers, `Claude-Session` links, and "Generated with" lines that name an AI tool.
+- **`main` only changes through pull requests,** which merge by squashing. The PR's title becomes the commit on `main`, so it follows the same format.
+
 ## Where things are
 
 - `src/`: the app. `src/components/` is the design system, which never imports the rest of the app.
