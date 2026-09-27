@@ -1,9 +1,22 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.env*
+.tanstack
+.wrangler
+.output
+.vinxi
+__unconfig*
+todos.json
+
+# typescript
+*.tsbuildinfo
+
 # Agent config: per-session files and worktrees stay local, the shared settings are committed
 .claude/*
 !.claude/settings.json
 
 # Wrangler's local secrets
 .dev.vars
-
-# macOS
-.DS_Store
