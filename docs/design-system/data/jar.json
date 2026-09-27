@@ -1,0 +1,163 @@
+{
+ "viewBox": "-20 -30 280 350",
+ "box": "the jar is 240 x 300 units; rendered width W gives height W*350/240 with the cork",
+ "outer": "M64 70 C64 84 58 92 44 100 C28 110 22 122 22 142 L22 252 C22 272 36 284 58 284 L182 284 C204 284 218 272 218 252 L218 142 C218 122 212 110 196 100 C182 92 176 84 176 70",
+ "body_clip": "M68 68 C68 84 62 94 48 102 C33 111 28 123 28 142 L28 252 C28 268 40 278 58 278 L182 278 C200 278 212 268 212 252 L212 142 C212 123 207 111 192 102 C178 94 172 84 172 68 Z",
+ "glass": {
+  "back_wall": "fill --glass at 55%",
+  "veil": "white at 10% (4% at night)",
+  "outline_width": 3.2,
+  "inner_line": "same path at 1.3 px, 32%, transform translate(120 176) scale(.955 .965) translate(-120 -176)"
+ },
+ "highlights": [
+  {
+   "d": "M40 150 C37 180 37 215 40 246",
+   "width": 8,
+   "opacity": 0.78
+  },
+  {
+   "d": "M41 258 L42 263",
+   "width": 7,
+   "opacity": 0.78
+  },
+  {
+   "d": "M52 118 C60 110 70 106 80 104",
+   "width": 5,
+   "opacity": 0.7
+  },
+  {
+   "d": "M203 160 C205 180 205 196 203 214",
+   "width": 3,
+   "opacity": 0.55
+  },
+  {
+   "d": "M70 276 C100 281 140 281 170 276",
+   "width": 3,
+   "opacity": 0.5
+  }
+ ],
+ "highlights_night_opacity": 0.35,
+ "rim": [
+  {
+   "cx": 120,
+   "cy": 68,
+   "rx": 60,
+   "ry": 10,
+   "fill": "white at 50% (#3A3D6E at 60% at night)",
+   "stroke": 3
+  },
+  {
+   "cx": 120,
+   "cy": 68,
+   "rx": 51,
+   "ry": 6.5,
+   "stroke": 1.4,
+   "stroke_opacity": 0.45
+  }
+ ],
+ "cork": {
+  "body": "M70 38 L73 62 C73 69 167 69 167 62 L170 38 Z",
+  "top": {
+   "cx": 120,
+   "cy": 38,
+   "rx": 50,
+   "ry": 9,
+   "fill": "#E7C08E"
+  },
+  "fill": "#D8A873",
+  "specks": "#A9794A",
+  "speck_positions": [
+   [
+    84,
+    46,
+    1.6
+   ],
+   [
+    97,
+    55,
+    1.2
+   ],
+   [
+    110,
+    44,
+    1.4
+   ],
+   [
+    126,
+    52,
+    1.8
+   ],
+   [
+    139,
+    46,
+    1.2
+   ],
+   [
+    150,
+    55,
+    1.5
+   ],
+   [
+    160,
+    44,
+    1.1
+   ],
+   [
+    102,
+    49,
+    0.9
+   ],
+   [
+    133,
+    58,
+    1.1
+   ],
+   [
+    90,
+    57,
+    1.1
+   ],
+   [
+    146,
+    50,
+    1.3
+   ]
+  ],
+  "sheen": "M84 36 C98 33 116 32 134 33",
+  "pop": "translate(10 -44) rotate(-16 120 48)",
+  "off": "translate(150 214) rotate(-78 120 48)"
+ },
+ "tape_label": {
+  "center": [
+   120,
+   214
+  ],
+  "rotate": -4,
+  "height": 30,
+  "width": "max(64, 9.6 * chars + 26)",
+  "ends": "zig-zag torn ends, 7 points, 2.5 units deep",
+  "fill": "--tape at 94%",
+  "text": "font-hand 15px bold, letter-spacing .04em, INFM 60 BNCE 20"
+ },
+ "shadow": {
+  "pattern": "5 x 5 units, dot r 1.25 in paper-ink",
+  "mask": "ellipse cx 120 cy 290 rx 118 ry 16, radial fade",
+  "opacity": "32% (50% at night)"
+ },
+ "night": {
+  "nightlight": "radial gradient at (.5, .58): #FFE3A6 62% -> #F5B8E8 22% at .42 -> #8FA8FF 0%, behind the glass; breathes .78-1 over 5 s",
+  "inner_glow": "radial #FFE9B8 55% -> 0 inside the body",
+  "stars": "glow inks, outline paper-ink at 55%"
+ },
+ "pile": {
+  "star_size": 21,
+  "packing": "greedy drop: each star tries 40 random x positions and takes the lowest resting spot; radius 8.4; seeded by the month key so a month always looks the same, and computed, never stored. It shows about 130 stars at most (F-10): past that, new stars land on the surface, and the tape shows the true count"
+ },
+ "cork_colors": {
+  "cork": "#D8A873",
+  "cork_dark": "#A9794A",
+  "wood": "#D89A62",
+  "wood_dark": "#A96B3A",
+  "tape": "#F3E6C4"
+ }
+}

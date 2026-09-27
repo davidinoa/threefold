@@ -1,0 +1,532 @@
+[
+ {
+  "letter": "A",
+  "name": "Fold & drop",
+  "trigger": "Enter on a line (or tap Fold)",
+  "total_ms": 1500,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 120,
+    "what": "lift"
+   },
+   {
+    "start_ms": 120,
+    "end_ms": 360,
+    "what": "wind"
+   },
+   {
+    "start_ms": 360,
+    "end_ms": 460,
+    "what": "puff"
+   },
+   {
+    "start_ms": 460,
+    "end_ms": 1060,
+    "what": "arc"
+   },
+   {
+    "start_ms": 1060,
+    "end_ms": 1420,
+    "what": "land + settle"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 130,
+    "sound": "crinkle"
+   },
+   {
+    "at_ms": 1060,
+    "sound": "tick"
+   }
+  ],
+  "easing": "lift: spring.snappy (y −6px, shadow 0→6px). wind: strip scaleX 1→0.08 from the left, spring.soft. puff: spring.bouncy 0.6→1. arc: ballistic, x linear, y gravity 2600 px/s², 1.5 turns. land: squash 1.25×0.8 then spring.bouncy; neighbors jostle 1–3px (spring.floaty).",
+  "reduced_motion": "The line text stays put and gains its star icon (160ms fade). A star fades in at its jar slot (200ms). Crinkle and tick still play.",
+  "notes": "The text winds toward the right end of the line, where the star forms, then hops toward the jar. Focus moves to the next line at 0ms; Enter again mid-flight starts a second flight, no queueing."
+ },
+ {
+  "letter": "B",
+  "name": "Lid pop & glow",
+  "trigger": "The third star of the day lands",
+  "total_ms": 3000,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 80,
+    "what": "beat"
+   },
+   {
+    "start_ms": 80,
+    "end_ms": 700,
+    "what": "cork"
+   },
+   {
+    "start_ms": 120,
+    "end_ms": 360,
+    "what": "glow in"
+   },
+   {
+    "start_ms": 360,
+    "end_ms": 2800,
+    "what": "breathe ×2"
+   },
+   {
+    "start_ms": 300,
+    "end_ms": 870,
+    "what": "message"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 80,
+    "sound": "pop"
+   },
+   {
+    "at_ms": 140,
+    "sound": "chord"
+   }
+  ],
+  "easing": "cork: up 34px, −16°, settles ajar on spring.bouncy. glow: opacity ease-out 240ms, then 2.4s sine breathe ×2. Message card: spring.soft from x −24px.",
+  "reduced_motion": "Cork lifts 4px without rotating; the glow is a 300ms fade and holds, no breathing. Chord plays.",
+  "notes": "Only once per day. Extra categories complete with their own soft chord and a glow, no pop."
+ },
+ {
+  "letter": "C",
+  "name": "The jar travels",
+  "trigger": "Any navigation between screens",
+  "total_ms": 1000,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 700,
+    "what": "jar: position + scale, k 118 c 17"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 900,
+    "what": "pile slosh from its acceleration"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 200,
+    "what": "old screen out"
+   },
+   {
+    "start_ms": 40,
+    "end_ms": 600,
+    "what": "new screen in, 38ms stagger"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 700,
+    "sound": "settle"
+   }
+  ],
+  "easing": "Built: one jar element for the whole prototype, moved by a JS spring (k 118, c 17, mass 1, about 700ms) that can be interrupted: tap another tab mid-flight and it re-targets from where it is, velocity intact. The pile rides its own spring, pushed by the jar’s acceleration, so the stars slosh as it lands. Content crossfades with a 16px drift in the direction of travel. Nothing waits for the jar.",
+  "reduced_motion": "The jar appears at its new spot with a 200ms fade. No travel, no slosh.",
+  "notes": "Where it goes: Today hero (beside the lines on desktop) → Review, docked in the header → Shelf, in September’s slot on the plank (it rides the plank while you drag, tips over when poured) → Shake, center stage → Insights, where its stars fade and the year pours in as sand. If its spot scrolls away, it hops into the header."
+ },
+ {
+  "letter": "D",
+  "name": "Stars settle and shift",
+  "trigger": "Device tilt, scroll velocity",
+  "total_ms": 1000,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 1000,
+    "what": "pile follows gravity (tilt)"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 400,
+    "what": "scroll / travel impulse"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 300,
+    "what": "landing bump"
+   }
+  ],
+  "sounds": [],
+  "easing": "Built: the pile is three depth bands on one spring (k 118, c 8.5). The top band moves most (×1), the middle ×0.65, the bottom ×0.3. Inputs: device tilt (gamma ±35° to 5.5 units of lean), the jar’s own acceleration (travel, scrolling, the bump when a star lands) and, on desktop, the pointer near the jar. The glass leans 0.3° per unit against the slosh. The loop sleeps when everything is still.",
+  "reduced_motion": "Pile is static. No tilt, scroll or pointer response.",
+  "notes": "Tilt works as-is on Android. On iOS the orientation permission is asked with motion, on the first tap of Shake the jar, never on launch."
+ },
+ {
+  "letter": "E",
+  "name": "Shelf: drag, take down, pour",
+  "trigger": "Drag or arrow keys; tap a jar or Pour it out",
+  "total_ms": 2000,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 280,
+    "what": "lift 12px"
+   },
+   {
+    "start_ms": 120,
+    "end_ms": 690,
+    "what": "fly to calendar"
+   },
+   {
+    "start_ms": 500,
+    "end_ms": 920,
+    "what": "tip 104°"
+   },
+   {
+    "start_ms": 700,
+    "end_ms": 1600,
+    "what": "stream (12ms stagger)"
+   },
+   {
+    "start_ms": 1000,
+    "end_ms": 1900,
+    "what": "land in day cells"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 90,
+    "sound": "pop"
+   },
+   {
+    "at_ms": 720,
+    "sound": "ticks"
+   }
+  ],
+  "easing": "Drag: 1:1 with the pointer, with a rubber band past the first and last jar. On release the flick velocity is projected 240ms ahead and the shelf snaps to the nearest jar with spring.soft. Lift: spring.snappy. September is the traveling jar itself: it rides the plank while you drag, and when poured it flies up, uncorks and tips 104° on the travel spring. Each star follows a gravity arc to its day cell, landing with spring.bouncy at 60% amplitude.",
+  "reduced_motion": "The jar fades out on the shelf and the calendar fades in with stars already in their cells (240ms).",
+  "notes": "Arrow buttons and ←/→ keys move one month with the same snap. Stars stream in drop order, so each day fills in the order it was written."
+ },
+ {
+  "letter": "F",
+  "name": "Unfold a star",
+  "trigger": "Tap a star, or Enter on a focused day",
+  "total_ms": 1300,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 280,
+    "what": "lift + turn"
+   },
+   {
+    "start_ms": 200,
+    "end_ms": 500,
+    "what": "unwind 5 × 60ms"
+   },
+   {
+    "start_ms": 500,
+    "end_ms": 1070,
+    "what": "strip slides to width"
+   },
+   {
+    "start_ms": 1070,
+    "end_ms": 1210,
+    "what": "text in"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 200,
+    "sound": "crinkle"
+   }
+  ],
+  "easing": "lift: spring.snappy to ×1.6, −30°. unwind: five 60ms steps, each a pentagon face flipping open (rotateY). strip: spring.soft. text: 140ms fade after the strip settles, so words never slide.",
+  "reduced_motion": "Star fades out, the strip fades in already open (200ms).",
+  "notes": "Fold it back plays the same in reverse at 1.4× speed. Esc also folds it back."
+ },
+ {
+  "letter": "G",
+  "name": "Shake for a memory",
+  "trigger": "Phone shake, desktop drag side to side, or the Shake button",
+  "total_ms": 3000,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 1320,
+    "what": "jar wobble"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 500,
+    "what": "rattle"
+   },
+   {
+    "start_ms": 420,
+    "end_ms": 900,
+    "what": "cork"
+   },
+   {
+    "start_ms": 700,
+    "end_ms": 1500,
+    "what": "tumble + bounces"
+   },
+   {
+    "start_ms": 1500,
+    "end_ms": 2800,
+    "what": "unfold (F)"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 0,
+    "sound": "rattle"
+   },
+   {
+    "at_ms": 420,
+    "sound": "pop"
+   },
+   {
+    "at_ms": 1180,
+    "sound": "tick"
+   },
+   {
+    "at_ms": 1380,
+    "sound": "tick"
+   },
+   {
+    "at_ms": 1700,
+    "sound": "crinkle"
+   }
+  ],
+  "easing": "Wobble: rotation on spring.wobble (k 500, c 8), stars get random impulses. Detection: devicemotion |a| > 14 m/s² twice within 600ms (iOS asks for motion permission on the first tap of Shake the jar); drag: two direction reversals of 30px or more within 900ms.",
+  "reduced_motion": "No wobble. The star appears beside the jar and the strip fades in open.",
+  "notes": "The picked star is uniformly random among the stars from before today, skipping the last five shaken; if that leaves none, it skips only the last one. On the first day, today’s stars count."
+ },
+ {
+  "letter": "H",
+  "name": "Sand-art settle",
+  "trigger": "The jar arrives on Insights",
+  "total_ms": 1800,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 320,
+    "what": "its own stars fade"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 1700,
+    "what": "the year pours in, 4ms stagger"
+   },
+   {
+    "start_ms": 500,
+    "end_ms": 1400,
+    "what": "bands fill"
+   },
+   {
+    "start_ms": 950,
+    "end_ms": 1600,
+    "what": "leader lines draw"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 1100,
+    "what": "numbers count up"
+   }
+  ],
+  "sounds": [],
+  "easing": "Built: when the jar lands in its spot its own stars fade (320ms) and about 250 stars (one per six) drop 150px into their layer slots, bottom layer first, 4ms stagger, spring.soft. Bands fade in under them, leader lines draw with stroke-dashoffset (300ms) and labels fade in. Totals count up over 1.1s, ease-out.",
+  "reduced_motion": "The layered jar is shown settled. Numbers appear final.",
+  "notes": "Insights is silent on purpose. Reading is quiet time."
+ },
+ {
+  "letter": "I",
+  "name": "Micro-interactions",
+  "trigger": "Press, hover, focus",
+  "total_ms": 600,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 90,
+    "what": "press ×0.94"
+   },
+   {
+    "start_ms": 90,
+    "end_ms": 370,
+    "what": "release"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 570,
+    "what": "tilt follow"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 260,
+    "what": "swash draws"
+   }
+  ],
+  "sounds": [],
+  "easing": "Buttons: scale 0.94 and +1px y over 90ms on press, spring.snappy back. Cards tilt toward the pointer (max 7°, perspective 700px), spring.soft; on touch they tilt toward the finger while pressed. The pencil cursor appears over writing lines (CSS cursor with a text fallback). Focus rings never animate.",
+  "reduced_motion": "Squish becomes a 90ms darken; tilt is off; the swash appears without drawing.",
+  "notes": "Every control is a real button, link or input, with a 44px minimum target."
+ },
+ {
+  "letter": "J",
+  "name": "Night switch",
+  "trigger": "The moon in the header, on any screen",
+  "total_ms": 800,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 160,
+    "what": "cover"
+   },
+   {
+    "start_ms": 160,
+    "end_ms": 180,
+    "what": "theme flips"
+   },
+   {
+    "start_ms": 220,
+    "end_ms": 500,
+    "what": "cover lifts"
+   },
+   {
+    "start_ms": 170,
+    "end_ms": 770,
+    "what": "night-light fades up"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 170,
+    "sound": "tick"
+   }
+  ],
+  "easing": "Cover: the screen dims to night blue (opacity .94, 160ms, ease), and lights up in the other theme (280ms). The flip under it is one class on the app root, so every color changes in the same frame. The jar’s night-light fades up over 600ms, then breathes (5s, .78 to 1).",
+  "reduced_motion": "No cover and no breathing. The theme swaps at once and the night-light is simply on. The tick and the announcement stay.",
+  "notes": "Only the room changes. Strips, stars, the cork and the shelf plank keep their day inks; paper, ink and glass turn to night. The moon is a toggle button (aria-pressed), and “Night mode on” or “off” is announced."
+ },
+ {
+  "letter": "K",
+  "name": "September, sealed",
+  "trigger": "The first open in a new month, once per device",
+  "total_ms": 3500,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 450,
+    "what": "the full jar, open"
+   },
+   {
+    "start_ms": 450,
+    "end_ms": 950,
+    "what": "cork drops"
+   },
+   {
+    "start_ms": 1250,
+    "end_ms": 1670,
+    "what": "tape slaps on"
+   },
+   {
+    "start_ms": 1900,
+    "end_ms": 2800,
+    "what": "slide; new jar in"
+   },
+   {
+    "start_ms": 2900,
+    "end_ms": 3400,
+    "what": "words"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 760,
+    "sound": "pop"
+   },
+   {
+    "at_ms": 1250,
+    "sound": "tick"
+   },
+   {
+    "at_ms": 1900,
+    "sound": "settle"
+   },
+   {
+    "at_ms": 2900,
+    "sound": "chord"
+   }
+  ],
+  "easing": "cork: from −120px, −8°, cubic-bezier(.3,1.45,.5,1) 500ms, so it overshoots and seats. tape: spring.bouncy from ×1.6, +8°. shelf: both old jars slide one place left on spring.soft (900ms); the new jar is the traveling jar, so it arrives on its own spring and then goes on to Today.",
+  "reduced_motion": "The sealed shelf is there at once: corked, labeled, October in place, the words and buttons showing. One tick.",
+  "notes": "It seals the most recent earlier month with stars; if there’s none, nothing plays. The buttons stay out of the tab order until they appear. Start October goes to Today, See the shelf to the Shelf (14 jars now)."
+ },
+ {
+  "letter": "L",
+  "name": "Take a star out",
+  "trigger": "Take it out, then confirm (Keep it has the focus)",
+  "total_ms": 1000,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 380,
+    "what": "strip drops, turns, shrinks"
+   },
+   {
+    "start_ms": 380,
+    "end_ms": 420,
+    "what": "counts −1"
+   },
+   {
+    "start_ms": 380,
+    "end_ms": 980,
+    "what": "next star unrolls (F)"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 0,
+    "sound": "crinkle"
+   },
+   {
+    "at_ms": 220,
+    "sound": "tick"
+   }
+  ],
+  "easing": "Crumple: translateY 34px, rotate 16°, scale .35, fade, cubic-bezier(.5,0,.75,0) 380ms, so it falls away rather than bounces. Then the month card, the jar’s tape, the calendar cell and the Insights totals all drop by one; if it was the day’s last star the day turns to plain paper and the panel folds up.",
+  "reduced_motion": "No crumple: the star is simply gone and the next one is shown. The tick stays.",
+  "notes": "Edit the words turns the strip into a text field on the same paper (Enter saves, Esc cancels) and saves silently but for a crinkle. Stars folded today change on Today, not here."
+ },
+ {
+  "letter": "M",
+  "name": "Last week, kept",
+  "trigger": "The first time Review opens in a new week, once per device",
+  "total_ms": 2200,
+  "segments": [
+   {
+    "start_ms": 0,
+    "end_ms": 300,
+    "what": "veil blurs in"
+   },
+   {
+    "start_ms": 0,
+    "end_ms": 620,
+    "what": "card rises, settles at −0.6°"
+   },
+   {
+    "start_ms": 1000,
+    "end_ms": 1340,
+    "what": "card drops"
+   },
+   {
+    "start_ms": 1340,
+    "end_ms": 2100,
+    "what": "new spread deals"
+   }
+  ],
+  "sounds": [
+   {
+    "at_ms": 1000,
+    "sound": "crinkle"
+   }
+  ],
+  "easing": "Card in: spring.soft from 30px lower and −1.5°, resting at −0.6° with the highlighter shadow. Out: 340ms ease-in, down 40px and +2°. Behind it the Review re-deals its eight cards and counts from 0.",
+  "reduced_motion": "Card and veil appear and leave without moving. The count shows 0 at once.",
+  "notes": "A modal on purpose: last week closed at midnight on Sunday, and this is its only look back. Read them back lists the week’s stars by category in the card; Esc or Start this week closes it."
+ }
+]

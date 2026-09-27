@@ -1,0 +1,263 @@
+{
+ "cycle": "category = order[daysBetween(\"2025-12-31\", day) % 8], on the device’s local date, with no break at New Year (2026-09-23 is Talents)",
+ "order": [
+  "people",
+  "home",
+  "talents",
+  "luck",
+  "body",
+  "work",
+  "knowledge",
+  "abundance"
+ ],
+ "categories": [
+  {
+   "key": "people",
+   "name": "People",
+   "ink": "Peony",
+   "ask": "People who make my life better",
+   "prompt": "Who made today lighter? Names welcome.",
+   "placeholders": [
+    "Someone who showed up…",
+    "A person who made you laugh…",
+    "Someone you’d thank today…"
+   ],
+   "day": {
+    "base": "#FFB0CA",
+    "shade": "#D884A1",
+    "deep": "#8A3658",
+    "light": "#FEE3EB",
+    "glow": "#FEC5D7",
+    "star": "#FFB0CA"
+   },
+   "night": {
+    "base": "#FFB0CA",
+    "shade": "#7C5970",
+    "deep": "#FEC5D7",
+    "light": "#372A41",
+    "glow": "#FEC5D7",
+    "star": "#FEC5D7"
+   },
+   "shake_quip": "Maybe tell them. Again.",
+   "insights_most": "You’re very good at noticing who shows up.",
+   "insights_quietest": "Its day comes around again soon."
+  },
+  {
+   "key": "home",
+   "name": "Home",
+   "ink": "Apricot",
+   "ask": "What I value about my home and where I live",
+   "prompt": "What does your place get right? Creaky floors count.",
+   "placeholders": [
+    "A corner you love…",
+    "Something your street gets right…",
+    "A small comfort at home…"
+   ],
+   "day": {
+    "base": "#FFB99F",
+    "shade": "#DD8B6C",
+    "deep": "#8D3C18",
+    "light": "#FEE5DC",
+    "glow": "#FECAB6",
+    "star": "#FFB99F"
+   },
+   "night": {
+    "base": "#FFB99F",
+    "shade": "#7C5D5D",
+    "deep": "#FECAB6",
+    "light": "#372C3A",
+    "glow": "#FECAB6",
+    "star": "#FECAB6"
+   },
+   "shake_quip": "Some rooms only get better.",
+   "insights_most": "The bottom layer, and the widest.",
+   "insights_quietest": "Its day comes around again soon."
+  },
+  {
+   "key": "talents",
+   "name": "Talents",
+   "ink": "Lilac",
+   "ask": "Natural gifts and skills I have",
+   "prompt": "Brag a little. The jar won’t tell.",
+   "placeholders": [
+    "Something you’re great at…",
+    "A compliment you believed…",
+    "A skill that saved the day…"
+   ],
+   "day": {
+    "base": "#E2A7F6",
+    "shade": "#B680C8",
+    "deep": "#733F83",
+    "light": "#F7E3FD",
+    "glow": "#F0C5FF",
+    "star": "#E2A7F6"
+   },
+   "night": {
+    "base": "#E2A7F6",
+    "shade": "#6F5484",
+    "deep": "#F0C5FF",
+    "light": "#322948",
+    "glow": "#F0C5FF",
+    "star": "#F0C5FF"
+   },
+   "shake_quip": "Still got it.",
+   "insights_most": "The bottom layer, and the widest.",
+   "insights_quietest": "Its day comes around again soon."
+  },
+  {
+   "key": "luck",
+   "name": "Luck",
+   "ink": "Clover",
+   "ask": "Moments when things broke my way",
+   "prompt": "When did the universe wink at you?",
+   "placeholders": [
+    "A near miss that missed…",
+    "Perfect timing, lately…",
+    "A happy accident…"
+   ],
+   "day": {
+    "base": "#C9E17C",
+    "shade": "#A1B657",
+    "deep": "#516003",
+    "light": "#E7F0D2",
+    "glow": "#CCE47F",
+    "star": "#C9E17C"
+   },
+   "night": {
+    "base": "#C9E17C",
+    "shade": "#646F4D",
+    "deep": "#CCE47F",
+    "light": "#2E3235",
+    "glow": "#CCE47F",
+    "star": "#CCE47F"
+   },
+   "shake_quip": "Some luck only looks like luck later.",
+   "insights_most": "The bottom layer, and the widest.",
+   "insights_quietest": "Its day comes around again soon."
+  },
+  {
+   "key": "body",
+   "name": "Body",
+   "ink": "Lagoon",
+   "ask": "Things my body does well",
+   "prompt": "Knees, lungs, that one good ear. What showed up for you?",
+   "placeholders": [
+    "Something your body did well…",
+    "A sense you’re glad to have…",
+    "A way you moved today…"
+   ],
+   "day": {
+    "base": "#6FE3E9",
+    "shade": "#48B7BD",
+    "deep": "#016569",
+    "light": "#CDF4F6",
+    "glow": "#52F1F9",
+    "star": "#6FE3E9"
+   },
+   "night": {
+    "base": "#6FE3E9",
+    "shade": "#3B707E",
+    "deep": "#52F1F9",
+    "light": "#203346",
+    "glow": "#52F1F9",
+    "star": "#52F1F9"
+   },
+   "shake_quip": "Your body did that. Remember?",
+   "insights_most": "The bottom layer, and the widest.",
+   "insights_quietest": "Next time it’s up, thank your knees. They’ve been carrying you."
+  },
+  {
+   "key": "work",
+   "name": "Work",
+   "ink": "Marigold",
+   "ask": "What I appreciate about my work",
+   "prompt": "What’s quietly good about how you spend your days?",
+   "placeholders": [
+    "A good moment at work…",
+    "Someone you work with…",
+    "A problem you cracked…"
+   ],
+   "day": {
+    "base": "#FFCB70",
+    "shade": "#D3A145",
+    "deep": "#735103",
+    "light": "#FAE9CE",
+    "glow": "#FECF7F",
+    "star": "#FFCB70"
+   },
+   "night": {
+    "base": "#FFCB70",
+    "shade": "#7C6548",
+    "deep": "#FECF7F",
+    "light": "#372F33",
+    "glow": "#FECF7F",
+    "star": "#FECF7F"
+   },
+   "shake_quip": "Past-you was on a roll.",
+   "insights_most": "The bottom layer, and the widest.",
+   "insights_quietest": "Its day comes around again soon."
+  },
+  {
+   "key": "knowledge",
+   "name": "Knowledge",
+   "ink": "Cornflower",
+   "ask": "Lessons and experiences that shaped me",
+   "prompt": "What do you know now that past-you didn’t?",
+   "placeholders": [
+    "A lesson that stuck…",
+    "Something you unlearned…",
+    "Advice you finally took…"
+   ],
+   "day": {
+    "base": "#95C0FF",
+    "shade": "#6E97D2",
+    "deep": "#29579A",
+    "light": "#E0ECFE",
+    "glow": "#C0D9FE",
+    "star": "#95C0FF"
+   },
+   "night": {
+    "base": "#95C0FF",
+    "shade": "#4C6088",
+    "deep": "#C0D9FE",
+    "light": "#262D4A",
+    "glow": "#C0D9FE",
+    "star": "#C0D9FE"
+   },
+   "shake_quip": "Still paying off.",
+   "insights_most": "The bottom layer, and the widest.",
+   "insights_quietest": "Its day comes around again soon."
+  },
+  {
+   "key": "abundance",
+   "name": "Abundance",
+   "ink": "Jade",
+   "ask": "Ways my life is already rich",
+   "prompt": "Proof you’re already rich. Money optional.",
+   "placeholders": [
+    "Something you have plenty of…",
+    "A free thing you love…",
+    "Proof you’re doing fine…"
+   ],
+   "day": {
+    "base": "#89E5B1",
+    "shade": "#64B98A",
+    "deep": "#056940",
+    "light": "#D6F4E1",
+    "glow": "#87F2B7",
+    "star": "#89E5B1"
+   },
+   "night": {
+    "base": "#89E5B1",
+    "shade": "#477065",
+    "deep": "#87F2B7",
+    "light": "#24333D",
+    "glow": "#87F2B7",
+    "star": "#87F2B7"
+   },
+   "shake_quip": "Still rich. Still counting.",
+   "insights_most": "The bottom layer, and the widest.",
+   "insights_quietest": "Its day comes around again soon."
+  }
+ ]
+}

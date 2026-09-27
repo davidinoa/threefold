@@ -1,0 +1,288 @@
+{
+ "today": {
+  "idle": [
+   "Three small things.",
+   "Big days, dull days, both count. Nothing’s graded."
+  ],
+  "idle_special": {
+   "firstDay": [
+    "Your first three.",
+    "One line each is plenty."
+   ],
+   "welcomeBack": [
+    "Welcome back.",
+    "The jar kept your place. Just today’s three, no catching up."
+   ],
+   "newMonth": [
+    "A new jar.",
+    "October starts empty, on purpose. First star?"
+   ]
+  },
+  "folding": {
+   "1": [
+    "One in the jar.",
+    "Two more and the lid pops."
+   ],
+   "2": [
+    "Two in the jar.",
+    "One more and the lid pops. Keep typing, the star can land on its own."
+   ],
+   "3": [
+    "Folding the last one…",
+    "Listen for it."
+   ]
+  },
+  "done_by_round": [
+   "Three for three.",
+   "Six. Show-off.",
+   "Nine! The jar is blushing.",
+   "Twelve. Okay, legend."
+  ],
+  "done_line": "{Weekday}’s folded and kept. Tomorrow asks about {Next}.",
+  "bonus_line": "{Category} is in the jar too. {Next} is next if you want it.",
+  "enter_hint": "folds a line into a star",
+  "review_link": "Full review, {n} of 24"
+ },
+ "review": {
+  "kicker": "Weekly full review · {Sep 21–27}",
+  "title": "All eight, if you’re up for it.",
+  "left": "{n} to go this week",
+  "all_done": "All eight. Kept.",
+  "note": "No rush. Fill what you can; the rest waits until Sunday night, no questions asked.",
+  "writing_hint": "folds it; the last Enter moves to the next card.",
+  "card_status": [
+   "Not yet",
+   "{n} of 3",
+   "Writing now"
+  ],
+  "stamp": "kept"
+ },
+ "shelf": {
+  "title": "Shelf",
+  "since": "13 jars since September 2025",
+  "drag_hint": "Drag the shelf. Tap a jar to pour it out.",
+  "month_card": "{n} stars on {d} days · {q} quiet days",
+  "pour": "Pour it out",
+  "shake": "Shake it",
+  "put_back": "Put it back",
+  "panel": {
+   "edit": "Edit the words",
+   "take_out": "Take it out",
+   "fold_back": "Fold it back",
+   "confirm": "Take this star out of the jar?",
+   "confirm_sub": "It won’t come back. The day keeps its others.",
+   "keep": "Keep it",
+   "todays": "Folded today, so it changes on Today.",
+   "go_today": "Go to Today",
+   "edit_hint": "Enter saves, Esc cancels"
+  }
+ },
+ "shake": {
+  "title": "Shake for a memory",
+  "sub": "One star tumbles out. Could be last week, could be last spring.",
+  "button": "Shake the jar",
+  "alt": "or give your phone a gentle shake",
+  "again": "Shake again",
+  "fold_back": "Fold it back",
+  "sheet_kicker": "Out of the {Month} jar",
+  "year_card": {
+   "kicker": [
+    "A year ago today",
+    "About a year ago",
+    "Your first star"
+   ],
+   "heads": [
+    [
+     "Your very first star.",
+     "The jar turns one today."
+    ],
+    [
+     "Week one of the jar.",
+     "{N} days in, a year ago."
+    ],
+    [
+     "The jar’s second week.",
+     "Still new, a year ago."
+    ],
+    [
+     "Four days old.",
+     "Give it a year."
+    ]
+   ]
+  }
+ },
+ "insights": {
+  "title": "Insights",
+  "sub": "What your jar says about you (lovingly).",
+  "since": "Since Sep 23, 2025.",
+  "stats": [
+   "stars in all",
+   "days with a star",
+   "jars on the shelf"
+  ],
+  "early": "Patterns need a couple of weeks of stars. So far {Category} leads with {n}."
+ },
+ "settings": {
+  "title": "Settings",
+  "sub": "Small things, your way.",
+  "cards": {
+   "Sound": [
+    "Sound",
+    "Paper, glass and one small chime, all in one key.",
+    "Volume",
+    "Hear a tink",
+    "Quiet by default, and silent until you touch something."
+   ],
+   "Night and motion": [
+    "Night: Match device / Day / Night",
+    "Motion: Match device / Calmer",
+    "Calmer swaps flights and wobbles for quick fades. The jar still fills, the lid still pops."
+   ],
+   "Keys": [
+    "Keys",
+    "Your passkeys open your jar on your devices.",
+    "Passkeys",
+    "{Provider} · {where} · Since {date}",
+    "Delete the {Provider} passkey",
+    "Create another passkey",
+    "For a password manager other than {Provider}.",
+    "Sign out of this {device}",
+    "Delete everything…"
+   ],
+   "Your jar": [
+    "Saved to your jar",
+    "Last saved just now.",
+    "{n} stars waiting",
+    "They’re safe on this {device}, and go into your jar when you’re back online.",
+    "Save a copy",
+    "All {n} stars as plain text, yours to keep.",
+    "Empty the jar…",
+    "every star goes; your keys stay"
+   ]
+  },
+  "empty_dialog": {
+   "title": "Empty the whole jar?",
+   "body": "All {n} stars and {j} jars go for good, on every device. Your keys stay. There’s no undo, so save a copy first if you might want them.",
+   "keep": "Keep my stars",
+   "hold": "Hold to empty",
+   "holding": "Keep holding…",
+   "save": "Save a copy first",
+   "done_title": "The jar is empty.",
+   "done_body": "{n} stars let go. Start again whenever you like: one small thing is plenty.",
+   "fresh": "Start fresh"
+  },
+  "toasts": [
+   "Saved a copy: {n} stars, as a text file",
+   "Calmer: quick fades instead of flights",
+   "Motion follows your device"
+  ]
+ },
+ "accounts": {
+  "keep": {
+   "ask": [
+    "Your first three are in",
+    "Keep this jar?",
+    "Right now it lives on this {device} only. Keep it, and one passkey opens it on all your devices.",
+    "Keep my jar",
+    "Not now",
+    "One {Face ID}. No email, no password."
+   ],
+   "wait": [
+    "Making your key",
+    "Your {iPhone} asks for {Face ID} now. That makes a passkey: a key only your devices hold.",
+    "Waiting for {Face ID}…",
+    "Cancel",
+    "{Face ID} stays on this {device}. We never see it."
+   ],
+   "canceled": [
+    "Nothing changed",
+    "No key yet.",
+    "That’s fine. Your stars are still here on this {device}.",
+    "Try again"
+   ],
+   "kept": [
+    "Kept",
+    "Your jar has a key.",
+    "Open it on {your other devices} with the same passkey. It’s saved in your {iCloud Keychain}."
+   ]
+  },
+  "hello": {
+   "title": "Good days are made of small things.",
+   "lead": "Three a day, folded into paper stars, in a jar only you can open.",
+   "start": "Start a jar",
+   "open": "Open my jar",
+   "fine": "Keeping one on another device? Its passkey opens it here.",
+   "wait": [
+    "Opening your jar",
+    "Your {iPhone} asks for {Face ID} now. Choose your Threefold passkey."
+   ],
+   "none": [
+    "No key opened it.",
+    "Nothing’s wrong with your jar. Try again.",
+    "Your passkey might live on another device. When your {iPhone} asks, you can choose to use a phone or tablet nearby.",
+    "Try again"
+   ],
+   "opening": [
+    "Unlocked",
+    "{n} stars",
+    "Pouring back in, from {j} jars. Everything you wrote, word for word."
+   ]
+  },
+  "offline": {
+   "chip": [
+    "Offline",
+    "Offline · {n} waiting",
+    "Saving…",
+    "In your jar"
+   ]
+  },
+  "dialogs": {
+   "passkey": [
+    "Delete this passkey?",
+    "The {Provider} passkey ({where}) won’t open your jar anymore. Your other keys still work.",
+    "Keep it",
+    "Delete this passkey"
+   ],
+   "last": [
+    "It’s your only key.",
+    "Delete it and nothing could open your jar. Create another passkey first.",
+    "Create another passkey",
+    "Keep it"
+   ],
+   "sign_out": [
+    "Sign out of this {device}?",
+    "Your stars stay safe in your jar. This {device} forgets them, and your passkey opens them again whenever you like.",
+    "Stay signed in",
+    "Sign out"
+   ],
+   "signed_out": [
+    "Signed out.",
+    "This {device} has forgotten your stars. They’re waiting in your jar, locked, for your passkey.",
+    "Open my jar again"
+   ],
+   "delete": [
+    "Delete your jar and keys?",
+    "All {n} stars, {j} jars and your passkeys go for good, on every device. There’s no undo, and no one can bring them back.",
+    "Keep everything",
+    "Hold to delete everything",
+    "Keep holding…",
+    "Save a copy first"
+   ],
+   "gone": [
+    "Everything’s gone.",
+    "Your jar, your stars and your keys are deleted from every device. Thank you for every small thing.",
+    "Start fresh"
+   ]
+  },
+  "toasts": [
+   "Your stars stay on this {device} for now.",
+   "Welcome back. {n} stars, all here.",
+   "Safe on this {device} for now.",
+   "Back online. {n} stars saved to your jar.",
+   "Back online. Everything’s in your jar.",
+   "{Provider} passkey deleted.",
+   "Passkey created in {Provider}.",
+   "Saved a copy of all {n} stars."
+  ]
+ }
+}

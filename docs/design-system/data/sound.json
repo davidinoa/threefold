@@ -1,0 +1,384 @@
+{
+ "key": "D major pentatonic",
+ "notes_hz": {
+  "D4": 293.66,
+  "D5": 587.33,
+  "E5": 659.26,
+  "F#5": 739.99,
+  "A5": 880.0,
+  "B5": 987.77,
+  "D6": 1174.66,
+  "E6": 1318.51
+ },
+ "todays_three": [
+  "D5",
+  "A5",
+  "E6"
+ ],
+ "completion_chord": [
+  "D5",
+  "A5",
+  "E6"
+ ],
+ "bonus_rounds": [
+  [
+   "D5",
+   "A5",
+   "E6"
+  ],
+  [
+   "F#5",
+   "B5",
+   "D6"
+  ],
+  [
+   "E5",
+   "A5",
+   "E6"
+  ],
+  [
+   "D5",
+   "F#5",
+   "D6"
+  ]
+ ],
+ "palette": [
+  {
+   "name": "Paper crinkle",
+   "key": "fold",
+   "when": "Every fold and unfold",
+   "how": "Band-passed noise (2.4kHz, Q 0.8) in 5–7 grains of 8–14ms over 140ms, with a short resonance on the line’s note. Unfold plays it reversed.",
+   "duration": "140ms",
+   "level": "−28 dBFS",
+   "pitch": "noise, resonates on the line’s note"
+  },
+  {
+   "name": "Glass tick",
+   "key": "land",
+   "when": "A star lands in a jar",
+   "how": "Sine on the note plus an inharmonic partial at 2.76× (glass), 1ms attack, 180ms decay; the partial decays in 60ms.",
+   "duration": "180ms",
+   "level": "−24 dBFS",
+   "pitch": "D5, A5, E6 by line; extras F♯5, B5, D6"
+  },
+  {
+   "name": "Cork pop",
+   "key": "lid",
+   "when": "The day’s third star lands",
+   "how": "Sine sweep 520→147 Hz in 70ms plus a 10ms low-passed click, then a soft body at D4.",
+   "duration": "220ms",
+   "level": "−22 dBFS",
+   "pitch": "lands on D4 (root)"
+  },
+  {
+   "name": "Chime",
+   "key": "done",
+   "when": "Day complete; review complete",
+   "how": "The day’s three notes as small bells (partials 1, 2, 3.01), 4ms attack, 2.2s exponential decay.",
+   "duration": "2.4s tail",
+   "level": "−20 dBFS peak",
+   "pitch": "D5 + A5 + E6"
+  }
+ ],
+ "events": [
+  {
+   "where": "Today",
+   "trigger": "Enter on line 1",
+   "sound": "Crinkle → Tick",
+   "pitch": "D5",
+   "timing": "crinkle 0ms, tick on landing ~1.06s"
+  },
+  {
+   "where": "Today",
+   "trigger": "Enter on line 2",
+   "sound": "Crinkle → Tick",
+   "pitch": "A5",
+   "timing": "crinkle 0ms, tick on landing"
+  },
+  {
+   "where": "Today",
+   "trigger": "Enter on line 3 (saves the day)",
+   "sound": "Crinkle → Tick",
+   "pitch": "E6",
+   "timing": "crinkle 0ms, tick on landing"
+  },
+  {
+   "where": "Today",
+   "trigger": "Third star lands",
+   "sound": "Cork pop",
+   "pitch": "D4",
+   "timing": "+80ms after the tick"
+  },
+  {
+   "where": "Today",
+   "trigger": "Day complete",
+   "sound": "Chime",
+   "pitch": "D5 + A5 + E6",
+   "timing": "+140ms, strummed 0/40/80ms"
+  },
+  {
+   "where": "Today",
+   "trigger": "Extra category: each line",
+   "sound": "Crinkle → Tick",
+   "pitch": "F♯5, B5, D6",
+   "timing": "same timing as above"
+  },
+  {
+   "where": "Today",
+   "trigger": "Extra category complete",
+   "sound": "Chime (soft, no pop)",
+   "pitch": "F♯5 + B5 + D6",
+   "timing": "+140ms, −6 dB"
+  },
+  {
+   "where": "Today",
+   "trigger": "Editing a saved line",
+   "sound": "None",
+   "pitch": "",
+   "timing": "quiet on purpose"
+  },
+  {
+   "where": "Anywhere",
+   "trigger": "The jar lands after traveling to a new screen",
+   "sound": "Settle: three tiny ticks",
+   "pitch": "high rungs, F♯5 to E6, −34 dBFS",
+   "timing": "on arrival; once per 900ms at most"
+  },
+  {
+   "where": "Full review",
+   "trigger": "Switch to another card",
+   "sound": "Crinkle (reversed, short)",
+   "pitch": "",
+   "timing": "as the card flips"
+  },
+  {
+   "where": "Full review",
+   "trigger": "Each line folded",
+   "sound": "Crinkle → Tick",
+   "pitch": "D5, A5, E6 by line",
+   "timing": "as Today"
+  },
+  {
+   "where": "Full review",
+   "trigger": "A card reaches 3 of 3",
+   "sound": "Chime (soft)",
+   "pitch": "D5 + A5 + E6",
+   "timing": "+90ms after the third tick"
+  },
+  {
+   "where": "Full review",
+   "trigger": "24 of 24",
+   "sound": "Cork pop + chime",
+   "pitch": "D5 E5 F♯5 A5 B5 D6, rolled up",
+   "timing": "40ms apart"
+  },
+  {
+   "where": "Shelf",
+   "trigger": "Snap to a jar after drag or arrow",
+   "sound": "Tick (glass on wood)",
+   "pitch": "month’s note: D, E, F♯, A, B cycling",
+   "timing": "on snap"
+  },
+  {
+   "where": "Shelf",
+   "trigger": "Take a jar down",
+   "sound": "Cork pop (soft)",
+   "pitch": "D4",
+   "timing": "on lift"
+  },
+  {
+   "where": "Shelf",
+   "trigger": "Pour",
+   "sound": "Ticks, cascading",
+   "pitch": "random rungs of the scale",
+   "timing": "12ms stagger, max 24 voices, fading"
+  },
+  {
+   "where": "Shelf / Shake",
+   "trigger": "Unfold a star",
+   "sound": "Crinkle (reversed)",
+   "pitch": "star’s note",
+   "timing": "on unwind"
+  },
+  {
+   "where": "Shelf / Shake",
+   "trigger": "Fold it back",
+   "sound": "Crinkle (short)",
+   "pitch": "",
+   "timing": "on fold"
+  },
+  {
+   "where": "Shake",
+   "trigger": "Shake detected or button",
+   "sound": "Rattle: 6–10 ticks",
+   "pitch": "random rungs, low-passed",
+   "timing": "over 500ms"
+  },
+  {
+   "where": "Shake",
+   "trigger": "Cork pops out",
+   "sound": "Cork pop",
+   "pitch": "D4",
+   "timing": "~420ms"
+  },
+  {
+   "where": "Shake",
+   "trigger": "Star bounces out",
+   "sound": "Tick, tick",
+   "pitch": "E5 then D5",
+   "timing": "each bounce"
+  },
+  {
+   "where": "Header",
+   "trigger": "Sound toggled on",
+   "sound": "Tick",
+   "pitch": "A5, −30 dBFS",
+   "timing": "confirmation only"
+  },
+  {
+   "where": "Header",
+   "trigger": "Sound toggled off",
+   "sound": "None",
+   "pitch": "",
+   "timing": ""
+  },
+  {
+   "where": "Header",
+   "trigger": "Night mode on (the moon)",
+   "sound": "Tick (quiet)",
+   "pitch": "D4, −33 dBFS",
+   "timing": "as the theme flips, 170ms"
+  },
+  {
+   "where": "Header",
+   "trigger": "Night mode off",
+   "sound": "Tick (quiet)",
+   "pitch": "D5, −33 dBFS",
+   "timing": "as the theme flips, 170ms"
+  },
+  {
+   "where": "Settings",
+   "trigger": "A night or motion option",
+   "sound": "Tick (quiet)",
+   "pitch": "D5 or F♯5",
+   "timing": "on pick"
+  },
+  {
+   "where": "Settings",
+   "trigger": "Sound on selected",
+   "sound": "Tick",
+   "pitch": "A5, −30 dBFS",
+   "timing": "on select"
+  },
+  {
+   "where": "Settings",
+   "trigger": "Volume let go",
+   "sound": "Tick",
+   "pitch": "A5, at the new level",
+   "timing": "on release"
+  },
+  {
+   "where": "Settings",
+   "trigger": "Hear a tink (preview)",
+   "sound": "Tick",
+   "pitch": "A5",
+   "timing": "on tap, even while sound is off"
+  },
+  {
+   "where": "Settings",
+   "trigger": "Save a copy",
+   "sound": "Crinkle (short)",
+   "pitch": "",
+   "timing": "with the toast"
+  },
+  {
+   "where": "Settings",
+   "trigger": "The jar emptied, after the long press",
+   "sound": "Cork pop (soft)",
+   "pitch": "D4",
+   "timing": "when the hold completes"
+  },
+  {
+   "where": "Full review",
+   "trigger": "New week: last week’s card leaves",
+   "sound": "Crinkle (short)",
+   "pitch": "",
+   "timing": "on Start this week"
+  },
+  {
+   "where": "Shelf",
+   "trigger": "Edit the words, then save",
+   "sound": "Crinkle",
+   "pitch": "",
+   "timing": "reversed as the field opens, short on save"
+  },
+  {
+   "where": "Shelf",
+   "trigger": "Take a star out",
+   "sound": "Crinkle → Tick",
+   "pitch": "D4, −30 dBFS",
+   "timing": "crinkle 0ms, tick +220ms"
+  },
+  {
+   "where": "The seal",
+   "trigger": "September’s cork seats",
+   "sound": "Cork pop",
+   "pitch": "D4",
+   "timing": "~760ms"
+  },
+  {
+   "where": "The seal",
+   "trigger": "The tape slaps on",
+   "sound": "Tick",
+   "pitch": "D5",
+   "timing": "1250ms"
+  },
+  {
+   "where": "The seal",
+   "trigger": "October’s jar is in",
+   "sound": "Chime (soft)",
+   "pitch": "D5 + A5 + E6",
+   "timing": "2900ms"
+  },
+  {
+   "where": "Insights",
+   "trigger": "Anything",
+   "sound": "None",
+   "pitch": "",
+   "timing": "silent by design"
+  },
+  {
+   "where": "Anywhere",
+   "trigger": "Tilting or scrolling the jar",
+   "sound": "None",
+   "pitch": "",
+   "timing": "the stars move, quietly"
+  }
+ ],
+ "rules": [
+  {
+   "rule": "Silent until touched",
+   "detail": "The AudioContext is created suspended and resumed on the first pointerdown or keydown. Nothing autoplays, ever, including after a reload."
+  },
+  {
+   "rule": "Low by default",
+   "detail": "Master gain starts at 0.25 (about −12 dB). No sound peaks above −18 dBFS. Volume lives in Settings; the header toggle is on/off."
+  },
+  {
+   "rule": "Plays nice with music",
+   "detail": "On iPhone, navigator.audioSession.type = \"ambient\": respects the silent switch and mixes under whatever is already playing."
+  },
+  {
+   "rule": "Never a pile-up",
+   "detail": "At most 6 voices. Ticks within 30ms of each other merge; the pour cascade thins out after 24 voices."
+  },
+  {
+   "rule": "Motion and sound are separate",
+   "detail": "Reduced motion does not mute. Sound off does not change motion. Both settings persist."
+  },
+  {
+   "rule": "Haptics as a quiet echo",
+   "detail": "On Android, a 10ms vibration on landing and 20ms on the lid pop (navigator.vibrate), only while sound is on."
+  }
+ ]
+}
