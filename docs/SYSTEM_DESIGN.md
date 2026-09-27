@@ -353,7 +353,7 @@ sequenceDiagram
 Details:
 
 - TanStack Start runs in SPA mode (`tanstackStart({ spa: { enabled: true } })`). The build emits the shell as `/_shell.html`, plus JavaScript and CSS files whose names include a hash of their contents.
-- The Worker serves the shell for every app route, and Start's server routes handle `/api/*`.
+- The Worker answers every app route with `/_shell.html`, byte for byte, through Cloudflare's assets binding, and Start handles `/api/*` and `/_serverFn/*` (section 6, question 4).
 - The shell's inline scripts (Start's own, plus the script that sets night mode before anything paints) run under CSP hashes (5.7).
 
 ### 2.3 The client
@@ -552,7 +552,7 @@ Details:
 
 - **It's our own small service worker, `/sw.js`, with no plugin.** The usual plugins, vite-plugin-pwa and Serwist, both silently skip generating the worker in Start builds (TanStack/router#4988).
 - **A script writes the precache list** into `sw.js` from `dist/client` after `vite build`. It covers:
-  - the shell, `/_shell.html`, added by hand because Start builds it last
+  - the shell, added by hand because Start builds it last. It's precached from `/`, which the Worker answers with `_shell.html`, because Cloudflare redirects a direct request for `/_shell.html` to `/_shell`, and a service worker can't answer a page load with a redirected response.
   - JavaScript, CSS, fonts, and icons, each with its content hash
 - **Caching rules**, as in the chart above:
   - Page loads get the saved shell.
@@ -1471,11 +1471,12 @@ There's no separate browser tier for Dexie and the sync engine, because the end-
    - Check what that does to other routes' first paint, to the CSP hashes, and to the service worker's fallback.
    - A commenter's workaround defines `TSS_PRERENDERING` and `TSS_SHELL`. It's untested, and `TSS_SHELL` may turn every render in the deployed Worker into a shell.
    - Today reads only from IndexedDB, so the prerendered `/` should be close to empty. It could also be emptied on purpose.
-   - **Seen on 2026-09-27, when the Cloudflare config landed:**
-     - The shell does include `/`'s content.
-     - The Worker server-renders every route that exists, instead of sending the shell as 2.2 expects, and an unknown path gets the root's not-found page with a 404.
-     - Server rendering would count every page load against the daily request limit, and against the 10 ms of CPU (5.2).
-     - So the spike also decides how the Worker sends the shell, which settles where the CSP header goes (5.7). It runs before the security headers, not only before the service worker.
+   - **Answered on 2026-09-27, in the shell spike, run early with the Cloudflare config:**
+     - **The cause:** Start honors the prerender's shell header only when `process.env.TSS_PRERENDERING` is `"true"`, and inside the Workers runtime `process.env` holds the Worker's bindings, not the build's environment. So the shell held `/`'s content, and the Worker server-rendered every route that exists.
+     - **The fix:** the build defines `process.env.TSS_SHELL` as `"true"`, as Start already does in dev with SPA mode on. Every server render is a shell, and `_shell.html` holds only the root route.
+     - **Serving it:** `src/server.ts` answers every page request with `_shell.html`, byte for byte, through the assets binding (2.2). `/api/*` and `/_serverFn/*` go to Start, and so do pages while the file doesn't exist yet, in dev and during the prerender. An unknown path gets the shell too, and the client router shows its not-found page.
+     - **What it settles:** the CSP hashes come from `dist/client/_shell.html` at build time, and the headers go on the Worker's responses (5.7). No page is server-rendered, so page loads cost no rendering CPU.
+     - **For the service worker:** Cloudflare redirects a direct request for `/_shell.html` to `/_shell`, so it precaches `/` instead (2.6).
 5. **Storybook's own build** (at setup). *Why it matters:* the Storybook is the design system's documentation, and it has to build without the app's plugins.
    - Check that `build-storybook` works with a Vite config of its own (`viteConfigPath`) that loads only React and Tailwind v4.
    - Check that Storybook's Vitest addon runs the stories as tests, and that accessibility errors fail them.
@@ -1675,6 +1676,7 @@ How changes are recorded:
 | 2026-09-26 | all | First version | — |
 | 2026-09-27 | 1.2 (F-2), 4.4, 5.10 | The empty-line animation is a wiggle, so "nudge" means only the deferred notification. The domain's seam is one view per screen. Testing uses three seams: end to end, the jar's rules, and the server's API | — |
 | 2026-09-27 | 6 (question 5) | The Storybook spike ran at setup: Storybook builds on a Vite config of its own, and its Vitest addon runs the stories as tests that accessibility errors fail. Vitest stays on 4 until the addon supports 5 | — |
+| 2026-09-27 | 2.2, 2.6, 6 (question 4) | The shell spike ran with the Cloudflare config: the build defines `TSS_SHELL`, so the shell holds only the root route, and the Worker answers every page with it, byte for byte. The service worker precaches it from `/` | — |
 
 ## Appendix A. Glossary
 

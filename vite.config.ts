@@ -7,6 +7,13 @@ import { defineConfig } from "vite"
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
+  // Every page the server renders is the SPA shell. Start defines this in
+  // dev; the build needs it too, because the Workers runtime can't see the
+  // build's environment (TanStack/router#7740).
+  define: {
+    "process.env.TSS_SHELL": JSON.stringify("true"),
+    "import.meta.env.TSS_SHELL": JSON.stringify("true"),
+  },
   plugins: [
     // devtools' sub-plugins all use enforce: "pre", so it stays first.
     devtools(),
