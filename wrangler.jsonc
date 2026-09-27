@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Production runs at threefold.davidinoa.workers.dev while there's no custom
+  // domain (system design §2.7).
+  "name": "threefold",
+  "main": "src/server.ts",
+  "compatibility_date": "2026-09-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "threefold",
+      "database_id": "a3a3c94b-ca58-4215-aee9-9c79f7ede3e4",
+    },
+  ],
+  // Worker Previews don't inherit production's bindings. Every preview shares
+  // the preview database, and a branch that changes the schema can bind its own.
+  "previews": {
+    "d1_databases": [
+      {
+        "binding": "DB",
+        "database_name": "threefold-preview",
+        "database_id": "bf653d1e-16c1-483c-a1db-a3962ce92d25",
+      },
+    ],
+  },
+}

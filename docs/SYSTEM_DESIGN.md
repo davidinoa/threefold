@@ -1471,6 +1471,11 @@ There's no separate browser tier for Dexie and the sync engine, because the end-
    - Check what that does to other routes' first paint, to the CSP hashes, and to the service worker's fallback.
    - A commenter's workaround defines `TSS_PRERENDERING` and `TSS_SHELL`. It's untested, and `TSS_SHELL` may turn every render in the deployed Worker into a shell.
    - Today reads only from IndexedDB, so the prerendered `/` should be close to empty. It could also be emptied on purpose.
+   - **Seen on 2026-09-27, when the Cloudflare config landed:**
+     - The shell does include `/`'s content.
+     - The Worker server-renders every route that exists, instead of sending the shell as 2.2 expects, and an unknown path gets the root's not-found page with a 404.
+     - Server rendering would count every page load against the daily request limit, and against the 10 ms of CPU (5.2).
+     - So the spike also decides how the Worker sends the shell, which settles where the CSP header goes (5.7). It runs before the security headers, not only before the service worker.
 5. **Storybook's own build** (at setup). *Why it matters:* the Storybook is the design system's documentation, and it has to build without the app's plugins.
    - Check that `build-storybook` works with a Vite config of its own (`viteConfigPath`) that loads only React and Tailwind v4.
    - Check that Storybook's Vitest addon runs the stories as tests, and that accessibility errors fail them.

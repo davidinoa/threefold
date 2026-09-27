@@ -104,5 +104,9 @@
       "rules": { "storybook/no-uninstalled-addons": "error" }
     }
   ],
-  "ignorePatterns": ["src/routeTree.gen.ts", "storybook-static"]
+  "ignorePatterns": [
+    "src/routeTree.gen.ts",
+    "worker-configuration.d.ts",
+    "storybook-static"
+  ]
 }

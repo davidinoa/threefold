@@ -32,17 +32,19 @@ pnpm exec playwright install chromium
 
 ## Scripts
 
-| Script                 | What it does                                                                                       |
-| ---------------------- | -------------------------------------------------------------------------------------------------- |
-| `pnpm dev`             | Runs the app at localhost:3000                                                                     |
-| `pnpm build`           | Builds the app: one static page, `_shell.html`, plus JavaScript and CSS files                      |
-| `pnpm storybook`       | Runs the design system's Storybook, a site that shows each component on its own, at localhost:6006 |
-| `pnpm build-storybook` | Builds the Storybook as a static site                                                              |
-| `pnpm test`            | Runs the tests. Every story is a test, and an accessibility problem fails it                       |
-| `pnpm lint`            | Lints with oxlint, including rules that use TypeScript's types                                     |
-| `pnpm format`          | Fixes what oxlint can, then formats with oxfmt                                                     |
-| `pnpm check`           | Checks the formatting without changing any file                                                    |
-| `pnpm typecheck`       | Type-checks with TypeScript 7                                                                      |
+| Script                 | What it does                                                                                                           |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`             | Runs the app at localhost:3000, with its server in the Workers runtime and a local D1 database                         |
+| `pnpm build`           | Builds the app: the static files, including the shell `_shell.html`, in `dist/client`, and the Worker in `dist/server` |
+| `pnpm storybook`       | Runs the design system's Storybook, a site that shows each component on its own, at localhost:6006                     |
+| `pnpm build-storybook` | Builds the Storybook as a static site                                                                                  |
+| `pnpm test`            | Runs the tests. Every story is a test, and an accessibility problem fails it                                           |
+| `pnpm lint`            | Lints with oxlint, including rules that use TypeScript's types                                                         |
+| `pnpm format`          | Fixes what oxlint can, then formats with oxfmt                                                                         |
+| `pnpm check`           | Checks the formatting without changing any file                                                                        |
+| `pnpm typecheck`       | Type-checks with TypeScript 7                                                                                          |
+| `pnpm cf-typegen`      | Regenerates `worker-configuration.d.ts`, the Worker's types, after a change to `wrangler.jsonc`                        |
+| `pnpm run deploy`      | Builds and deploys to Cloudflare by hand. Normally Workers Builds deploys on merge to `main`                           |
 
 ## Commits and pull requests
 
