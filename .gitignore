@@ -20,3 +20,7 @@ todos.json
 
 # Wrangler's local secrets
 .dev.vars
+
+# Storybook's build output and logs
+*storybook.log
+storybook-static

@@ -9,5 +9,5 @@
     "stylesheet": "./src/styles.css",
     "functions": ["cn", "cva"]
   },
-  "ignorePatterns": ["src/routeTree.gen.ts", "docs/**"]
+  "ignorePatterns": ["src/routeTree.gen.ts", "docs/**", "storybook-static"]
 }
