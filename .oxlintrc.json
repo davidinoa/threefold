@@ -1,0 +1,107 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "react",
+    "jsx-a11y",
+    "import",
+    "vitest"
+  ],
+  "jsPlugins": ["@tanstack/eslint-plugin-router", "eslint-plugin-storybook"],
+  "categories": { "correctness": "error", "suspicious": "error" },
+  "options": {
+    "typeAware": true,
+    "denyWarnings": true,
+    "reportUnusedDisableDirectives": "error"
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/hooks": "off",
+    "react/exhaustive-effect-dependencies": "off",
+    "react/rules-of-hooks": "error",
+    "react/unsupported-syntax": "error",
+    "typescript/no-misused-promises": "error",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
+    "typescript/no-unsafe-type-assertion": "off",
+    "no-underscore-dangle": "off",
+    "unicorn/consistent-function-scoping": "off",
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }],
+    "@tanstack/router/create-route-property-order": "error"
+  },
+  "overrides": [
+    {
+      "files": ["src/components/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@tanstack/react-router",
+                "message": "The design system stays router-free: take links through Base UI's render prop."
+              },
+              {
+                "name": "@tanstack/react-start",
+                "message": "The design system stays independent of the app."
+              },
+              {
+                "name": "dexie",
+                "message": "Components get data as props, not from the database."
+              }
+            ],
+            "patterns": [
+              {
+                "group": [
+                  "@/lib/data/*",
+                  "@/lib/sync/*",
+                  "@/lib/account/*",
+                  "@/routes/*",
+                  "@/screens/*"
+                ],
+                "message": "The design system stays independent of the app."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/components/ui/**"],
+      "rules": {
+        "no-shadow": "off",
+        "react/no-unstable-nested-components": "off",
+        "react/set-state-in-effect": "off",
+        "jsx-a11y/prefer-tag-over-role": "off",
+        "typescript/consistent-return": "off"
+      }
+    },
+    {
+      "files": ["**/*.stories.{ts,tsx}"],
+      "rules": {
+        "react/rules-of-hooks": "off",
+        "typescript/unbound-method": "off",
+        "storybook/await-interactions": "error",
+        "storybook/context-in-play-function": "error",
+        "storybook/default-exports": "error",
+        "storybook/hierarchy-separator": "error",
+        "storybook/no-redundant-story-name": "error",
+        "storybook/no-renderer-packages": "error",
+        "storybook/prefer-pascal-case": "error",
+        "storybook/story-exports": "error",
+        "storybook/use-storybook-expect": "error",
+        "storybook/use-storybook-testing-library": "error"
+      }
+    },
+    {
+      "files": [".storybook/main.ts"],
+      "rules": { "storybook/no-uninstalled-addons": "error" }
+    }
+  ],
+  "ignorePatterns": ["src/routeTree.gen.ts"]
+}

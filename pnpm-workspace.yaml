@@ -5,3 +5,13 @@ allowBuilds:
   lightningcss: true
   unrs-resolver: true
   msw: false
+
+# oxlint borrows the router's and Storybook's lint rules. Their
+# @typescript-eslint packages ask for TypeScript below 6.1, but the rules
+# work on 7 (checked with planted violations).
+peerDependencyRules:
+  allowedVersions:
+    "@typescript-eslint/project-service>typescript": "7"
+    "@typescript-eslint/tsconfig-utils>typescript": "7"
+    "@typescript-eslint/typescript-estree>typescript": "7"
+    "@typescript-eslint/utils>typescript": "7"
