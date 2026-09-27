@@ -9,5 +9,10 @@
     "stylesheet": "./src/styles.css",
     "functions": ["cn", "cva"]
   },
-  "ignorePatterns": ["src/routeTree.gen.ts", "docs/**", "storybook-static"]
+  "ignorePatterns": [
+    "src/routeTree.gen.ts",
+    "AGENTS.md",
+    "docs/**",
+    "storybook-static"
+  ]
 }
