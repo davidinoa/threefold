@@ -1,0 +1,58 @@
+name: PR
+
+# What only a pull request has: its commits, its title, and its body. Editing
+# the title or the body reruns this without rerunning CI.
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  commits:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Every commit in the PR, so one made with --no-verify still fails.
+      # The SHAs, the title, and the body come in through env, never inside
+      # run, so a crafted title can't run commands.
+      - name: Lint the PR's commits
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: pnpm exec commitlint --from "$BASE" --to "$HEAD"
+
+      - name: Lint the PR's title, which becomes the commit on main
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s\n' "$TITLE" | pnpm exec commitlint
+
+      # Dependabot writes its own bodies, full of other projects' notes.
+      - name: Check the PR's body for agent attribution
+        if: github.event.pull_request.user.login != 'dependabot[bot]'
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          node --input-type=module -e '
+          const { agentAttribution } = await import("./commitlint.config.js")
+          const match = agentAttribution.find((pattern) => pattern.test(process.env.BODY ?? ""))
+          if (match) {
+            console.error(`PR body has agent attribution: ${match}`)
+            process.exit(1)
+          }'
