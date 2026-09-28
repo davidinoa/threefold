@@ -7,7 +7,17 @@
   "compatibility_date": "2026-09-25",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
-  "assets": { "binding": "ASSETS" },
+  "assets": {
+    "binding": "ASSETS",
+    // Cloudflare serves static files before the Worker runs. The shell's own
+    // paths go through the Worker anyway, so they get its headers and CSP.
+    "run_worker_first": ["/_shell", "/_shell.html"],
+  },
+  // Workers Logs keeps only what the Worker logs itself: error reports, one
+  // JSON line each (system design §4.3). Invocation logs would record every
+  // request's details, and the server stores nothing that identifies anyone
+  // (N-5).
+  "observability": { "enabled": true, "logs": { "invocation_logs": false } },
   "d1_databases": [
     {
       "binding": "DB",

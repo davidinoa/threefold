@@ -1,4 +1,6 @@
-import { cloudflareTest } from "@cloudflare/vitest-plugin"
+import { existsSync } from "node:fs"
+
+import { cloudflareTest, readD1Migrations } from "@cloudflare/vitest-plugin"
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin"
 import { playwright } from "@vitest/browser-playwright"
 import { configDefaults, defineConfig, mergeConfig } from "vitest/config"
@@ -29,9 +31,18 @@ export default defineConfig({
       // test script builds first.
       {
         plugins: [
-          cloudflareTest({
+          cloudflareTest(async () => ({
             wrangler: { configPath: "./dist/server/wrangler.json" },
-          }),
+            // The D1 migrations, for the tests to apply. The folder appears
+            // with the first one, Better Auth's tables.
+            miniflare: {
+              bindings: {
+                TEST_MIGRATIONS: existsSync("migrations")
+                  ? await readD1Migrations("migrations")
+                  : [],
+              },
+            },
+          })),
         ],
         test: {
           name: "server",
