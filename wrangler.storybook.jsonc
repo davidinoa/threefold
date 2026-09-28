@@ -7,4 +7,7 @@
   "compatibility_date": "2026-09-25",
   "workers_dev": true,
   "assets": { "directory": "./storybook-static" },
+  // wrangler preview requires this block, even empty: each branch gets a
+  // preview of the Storybook, as with the app.
+  "previews": {},
 }
