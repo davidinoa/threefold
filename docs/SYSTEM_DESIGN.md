@@ -355,6 +355,7 @@ Details:
 - TanStack Start runs in SPA mode (`tanstackStart({ spa: { enabled: true } })`). The build emits the shell as `/_shell.html`, plus JavaScript and CSS files whose names include a hash of their contents.
 - The Worker answers every app route with `/_shell.html`, byte for byte, through Cloudflare's assets binding, and Start handles `/api/*` and `/_serverFn/*` (section 6, question 4).
 - The shell's inline scripts (Start's own, plus the script that sets night mode before anything paints) run under CSP hashes (5.7).
+- The app's content renders only once the shell has hydrated, through the router's `ClientOnly` in the root route. The shell leaves the page area empty, and wherever a route's code is already loaded, the client would fill that area on its first pass, which fails hydration with React error #418 (TanStack/router#8473). Nothing is server-rendered anyway.
 
 ### 2.3 The client
 
@@ -1693,6 +1694,7 @@ How changes are recorded:
 | 2026-09-27 | 6 (question 5) | The Storybook spike ran at setup: Storybook builds on a Vite config of its own, and its Vitest addon runs the stories as tests that accessibility errors fail. Vitest stays on 4 until the addon supports 5 | — |
 | 2026-09-27 | 2.2, 2.6, 6 (question 4) | The shell spike ran with the Cloudflare config: the build defines `TSS_SHELL`, so the shell holds only the root route, and the Worker answers every page with it, byte for byte. The service worker precaches it from `/` | — |
 | 2026-09-27 | 4.3, 5.7 | The security baseline: the CSP adds `default-src` and `form-action`, the build hashes the shell's scripts the way the browser reads them, and the shell's own paths run the Worker first. `/api/errors` turns away anything but an exact report, without logging it. Workers Logs keeps no invocation logs | — |
+| 2026-09-27 | 2.2 | The app's content renders only once the shell has hydrated, which avoids React error #418 wherever a route's code is already loaded (TanStack/router#8473) | — |
 
 ## Appendix A. Glossary
 

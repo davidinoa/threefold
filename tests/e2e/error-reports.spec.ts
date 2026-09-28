@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test"
 
 import { expect, test } from "./fixtures"
 
-// The page can report errors of its own, so wait for the one a test caused.
+// Waits for the report of the error a test caused, by the error's name.
 function reportNamed(page: Page, name: string) {
   return page.waitForRequest(
     (request) =>
@@ -13,6 +13,7 @@ function reportNamed(page: Page, name: string) {
 
 test("an uncaught error reaches the server without the text it quoted", async ({
   page,
+  guards,
 }) => {
   await page.goto("/")
   const reported = reportNamed(page, "TypeError")
@@ -33,9 +34,18 @@ test("an uncaught error reaches the server without the text it quoted", async ({
     browser: expect.stringMatching(/^(Chrome|Safari) \d+, \w+/),
   })
   expect((await request.response())?.status()).toBe(204)
+
+  // Thrown on purpose, so the guards shouldn't fail the test for it.
+  await expect
+    .poll(() => guards.pageErrors)
+    .toEqual([expect.stringContaining('Could not fold "Dinner with Sam"')])
+  guards.pageErrors.splice(0)
 })
 
-test("a rejection with a plain value sends only its type", async ({ page }) => {
+test("a rejection with a plain value sends only its type", async ({
+  page,
+  guards,
+}) => {
   await page.goto("/")
   const reported = reportNamed(page, "NonError")
   await page.evaluate(() => {
@@ -45,4 +55,8 @@ test("a rejection with a plain value sends only its type", async ({ page }) => {
 
   const report: unknown = (await reported).postDataJSON()
   expect(report).toMatchObject({ message: "Thrown string", stack: "" })
+
+  // Left unhandled on purpose, so the guards shouldn't fail the test for it.
+  await expect.poll(() => guards.pageErrors).toEqual(["Dinner with Sam"])
+  guards.pageErrors.splice(0)
 })
