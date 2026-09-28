@@ -6,7 +6,7 @@
     "dev": "vite dev --port 3000",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "vite build && vitest run",
     "lint": "oxlint",
     "format": "oxlint --fix && oxfmt",
     "check": "oxfmt --check",
@@ -15,7 +15,9 @@
     "build-storybook": "storybook build",
     "prepare": "husky",
     "deploy": "pnpm build && wrangler deploy",
-    "cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types",
+    "test:watch": "vitest",
+    "e2e": "vite build && playwright test"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -44,8 +46,10 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.60.2",
+    "@cloudflare/vitest-plugin": "^1.2.8",
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
+    "@playwright/test": "^1.63.0",
     "@storybook/addon-a11y": "^10.6.0",
     "@storybook/addon-docs": "^10.6.0",
     "@storybook/addon-themes": "^10.6.0",
