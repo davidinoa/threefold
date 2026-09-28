@@ -30,11 +30,11 @@ export default defineConfig({
       // local D1. It tests the Worker as built, which is what ships, so the
       // test script builds first.
       {
+        resolve: { tsconfigPaths: true },
         plugins: [
           cloudflareTest(async () => ({
             wrangler: { configPath: "./dist/server/wrangler.json" },
-            // The D1 migrations, for the tests to apply. The folder appears
-            // with the first one, Better Auth's tables.
+            // The D1 migrations, which tests/server/setup.ts applies.
             miniflare: {
               bindings: {
                 TEST_MIGRATIONS: existsSync("migrations")
@@ -48,6 +48,18 @@ export default defineConfig({
           name: "server",
           include: ["tests/server/**/*.test.ts"],
           exclude,
+          setupFiles: ["tests/server/setup.ts"],
+          // Better Auth, bundled for the tests that import it. Loaded file by
+          // file, one of its dependencies fails in the Workers runtime.
+          deps: {
+            optimizer: {
+              ssr: {
+                enabled: true,
+                include: ["better-auth", "better-auth/plugins"],
+                rolldownOptions: { external: [/^node:/] },
+              },
+            },
+          },
         },
       },
       // Every story runs as a test in Chromium, on Storybook's own Vite

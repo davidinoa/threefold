@@ -97,6 +97,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # The stories run as tests in Vitest's browser mode, on Chromium.
       - run: pnpm exec playwright install --with-deps chromium
+      # The Worker's local vars, with a BETTER_AUTH_SECRET made for this run.
+      - run: pnpm dev-vars
       - run: pnpm test
 
   e2e:
@@ -113,4 +115,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium webkit
+      # The Worker's local vars, with a BETTER_AUTH_SECRET made for this run.
+      # pnpm e2e applies the migrations to the local D1 itself.
+      - run: pnpm dev-vars
       - run: pnpm e2e
