@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Only for applying migrations to the previews' database, before each
+  // preview deploys (pnpm release:preview). wrangler d1 commands look up
+  // databases in d1_databases alone, and in wrangler.jsonc the previews'
+  // database is under previews.
+  "name": "threefold",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "threefold-preview",
+      "database_id": "bf653d1e-16c1-483c-a1db-a3962ce92d25",
+      "migrations_dir": "migrations",
+    },
+  ],
+}
