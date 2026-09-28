@@ -1,5 +1,6 @@
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import {
+  ClientOnly,
   HeadContent,
   ScriptOnce,
   Scripts,
@@ -43,7 +44,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body className="paper-grain">
         <ScriptOnce>{themeScript}</ScriptOnce>
         <ThemeProvider>
-          <MotionConfig reducedMotion="user">{children}</MotionConfig>
+          <MotionConfig reducedMotion="user">
+            {/* The shell leaves the page area empty, but the client can fill
+                it on its first pass, which fails hydration with React #418
+                (TanStack/router#8473). Rendering it only after hydration
+                matches the shell at every address. Nothing here is
+                server-rendered anyway: it's a single-page app. */}
+            <ClientOnly>{children}</ClientOnly>
+          </MotionConfig>
         </ThemeProvider>
         <TanStackDevtools
           config={{

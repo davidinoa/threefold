@@ -601,7 +601,7 @@ This is the acceptance check for every user story. The setup:
 - **Dates:** Playwright's clock sets and moves the date, and each context sets its own time zone.
 - **The network:** tests go offline, and they fake server answers (401, 410, 413, 426, 429, and 5xx) by intercepting requests.
 - **Reduced motion:** a second project reruns everything with reduced motion.
-- **Guards on every test:** it fails on any request to another origin, and on any CSP violation.
+- **Guards on every test:** it fails on any request to another origin, on any CSP violation, and on any error the page doesn't catch.
 
 The journeys:
 
