@@ -1,14 +1,14 @@
 import { execFileSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import { readFile, readdir, writeFile } from "node:fs/promises"
-import { join, resolve } from "node:path"
+import { join, relative, resolve } from "node:path"
 
 import { cloudflare } from "@cloudflare/vite-plugin"
 import tailwindcss from "@tailwindcss/vite"
 import { devtools } from "@tanstack/devtools-vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import viteReact from "@vitejs/plugin-react"
-import { type Plugin, defineConfig } from "vite"
+import { type Plugin, type ViteBuilder, build, defineConfig } from "vite"
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
@@ -31,8 +31,9 @@ const config = defineConfig({
     // server routes serve the API (system design §2.2).
     tanstackStart({ spa: { enabled: true } }),
     viteReact(),
-    // Last, so it runs after Start's prerender.
+    // Last, so they run after Start's prerender.
     shellScriptHashes(),
+    serviceWorker(),
   ],
 })
 
@@ -48,6 +49,13 @@ function buildId() {
   } catch {
     return "dev"
   }
+}
+
+/** The folder a build environment writes to. */
+function outDir(builder: ViteBuilder, name: string) {
+  const environment = builder.environments[name]
+  if (!environment) throw new Error(`No "${name}" build environment`)
+  return resolve(builder.config.root, environment.config.build.outDir)
 }
 
 // src/server.ts holds this until the build writes in the hashes. The bundler
@@ -68,14 +76,8 @@ function shellScriptHashes(): Plugin {
     buildApp: {
       order: "post",
       async handler(builder) {
-        const outDir = (name: string) => {
-          const environment = builder.environments[name]
-          if (!environment) throw new Error(`No "${name}" build environment`)
-          return resolve(builder.config.root, environment.config.build.outDir)
-        }
-
         const shell = await readFile(
-          join(outDir("client"), "_shell.html"),
+          join(outDir(builder, "client"), "_shell.html"),
           "utf8"
         )
         const hashes = [
@@ -91,7 +93,7 @@ function shellScriptHashes(): Plugin {
           return `sha256-${hash}`
         })
 
-        const serverDir = outDir("ssr")
+        const serverDir = outDir(builder, "ssr")
         const files = await readdir(serverDir, { recursive: true })
         let written = 0
         for (const file of files.filter((name) => name.endsWith(".js"))) {
@@ -108,6 +110,84 @@ function shellScriptHashes(): Plugin {
             "The built Worker has no place for the shell's script hashes"
           )
         }
+      },
+    },
+  }
+}
+
+// The design subsets the fonts to Latin (system design §5.5), so the service
+// worker skips the files Fontsource adds for other scripts. Their names say
+// which.
+const OTHER_SCRIPTS =
+  /-(latin-ext|cyrillic|cyrillic-ext|greek|greek-ext|vietnamese|math)-/
+
+/** Whether the service worker saves a file from the client build. */
+function isPrecached(file: string) {
+  if (["_shell.html", "sw.js", "robots.txt"].includes(file)) return false
+  if (file.split("/").some((part) => part.startsWith("."))) return false
+  if (file.endsWith(".map")) return false
+  return !(file.endsWith(".woff2") && OTHER_SCRIPTS.test(file))
+}
+
+/**
+ * Compiles src/sw.ts to /sw.js, with the files it precaches (system design
+ * §2.6). The list comes from the finished client build, so this runs after
+ * Start's prerender too. The shell is saved as /, which the Worker answers
+ * with it, because Cloudflare redirects a request for /_shell.html.
+ */
+function serviceWorker(): Plugin {
+  return {
+    name: "threefold:service-worker",
+    enforce: "post",
+    buildApp: {
+      order: "post",
+      async handler(builder) {
+        const clientDir = outDir(builder, "client")
+        const entries = await readdir(clientDir, {
+          recursive: true,
+          withFileTypes: true,
+        })
+        const files = entries
+          .filter((entry) => entry.isFile())
+          .map((entry) =>
+            relative(clientDir, join(entry.parentPath, entry.name))
+          )
+          .filter((file) => isPrecached(file))
+          .toSorted()
+
+        // A change to any saved file, the shell included, makes a new sw.js,
+        // which the browser installs as a new version with its own cache.
+        const version = createHash("sha256")
+        for (const file of ["_shell.html", ...files]) {
+          version.update(file).update(await readFile(join(clientDir, file)))
+        }
+
+        await build({
+          configFile: false,
+          root: builder.config.root,
+          logLevel: "warn",
+          resolve: { tsconfigPaths: true },
+          define: {
+            __PRECACHE__: JSON.stringify([
+              "/",
+              ...files.map((file) => `/${file}`),
+            ]),
+            __VERSION__: JSON.stringify(version.digest("hex").slice(0, 12)),
+          },
+          build: {
+            outDir: clientDir,
+            emptyOutDir: false,
+            copyPublicDir: false,
+            minify: true,
+            // A classic script, which every browser runs as a service worker.
+            lib: {
+              entry: resolve(builder.config.root, "src/sw.ts"),
+              formats: ["iife"],
+              name: "threefoldServiceWorker",
+              fileName: () => "sw.js",
+            },
+          },
+        })
       },
     },
   }

@@ -555,16 +555,19 @@ flowchart TD
 
 Details:
 
-- **It's our own small service worker, `/sw.js`, with no plugin.** The usual plugins, vite-plugin-pwa and Serwist, both silently skip generating the worker in Start builds (TanStack/router#4988).
-- **A script writes the precache list** into `sw.js` from `dist/client` after `vite build`. It covers:
-  - the shell, added by hand because Start builds it last. It's precached from `/`, which the Worker answers with `_shell.html`, because Cloudflare redirects a direct request for `/_shell.html` to `/_shell`, and a service worker can't answer a page load with a redirected response.
-  - JavaScript, CSS, fonts, and icons, each with its content hash
+- **It's our own small service worker, with no plugin.** The usual plugins, vite-plugin-pwa and Serwist, both silently skip generating the worker in Start builds (TanStack/router#4988). Its source is `src/sw.ts`.
+- **The build writes the precache list in.** After Start's prerender, a Vite plugin (`serviceWorker` in `vite.config.ts`) lists `dist/client`, then compiles `src/sw.ts` into `/sw.js`, a classic script, with the list written in. The list covers:
+  - the shell, precached from `/`, which the Worker answers with `_shell.html`. Cloudflare redirects a direct request for `/_shell.html` to `/_shell`, and a service worker can't answer a page load with a redirected response.
+  - JavaScript, CSS, fonts, icons, and the manifest. The fonts are Latin only: the files Fontsource adds for other scripts, such as Cyrillic or Latin Extended, are left out (5.5).
+- **Each build is a version.** `sw.js` carries a hash of every saved file, the shell included. A change to any of them makes a new `sw.js`, which the browser installs as a new version with a cache of its own.
+- **The app registers it in the build only.** In development, Vite serves every file fresh. The first visit installs it without taking over the open page, and the next page load comes from it.
 - **Caching rules**, as in the chart above:
   - Page loads get the saved shell.
   - Saved files are served cache-first: from the cache when it has them.
-  - `/api/*` and `/_serverFn/*` always go to the network and are never cached.
-- **The web app manifest** is a small JSON file that lets the app live on the Home Screen.
-  - It sets `id`, `start_url`, `scope`, `display: standalone`, icons including a maskable one, and theme colors for day and night.
+  - `/api/*` and `/_serverFn/*` always go to the network and are never cached. The Worker and the service worker share this rule, in `src/lib/server-paths.ts`.
+- **The web app manifest**, `/manifest.webmanifest`, is a small JSON file that lets the app live on the Home Screen.
+  - It sets `id`, `start_url`, `scope`, `display: standalone`, and icons including a maskable one. The icons are placeholders until the app icon is designed.
+  - Its theme color is Day's paper. The theme script sets the page's `theme-color` to Day's or Night's, whichever is showing, so the browser's bars match the page.
   - On the iPhone, being on the Home Screen also keeps the app's storage from being cleared after a week without visits (5.4).
 - The push handlers join this worker with the nudge (section 8).
 
@@ -1719,6 +1722,7 @@ How changes are recorded:
 | 2026-09-27 | 2.2 | The app's content renders only once the shell has hydrated, which avoids React error #418 wherever a route's code is already loaded (TanStack/router#8473) | — |
 | 2026-09-27 | 2.5, 2.7, 3.5, 4.1, 5.10 | Better Auth is set up. Previews take their RP ID from the hostname they're served on, checked against a pattern in their config, because Cloudflare doesn't tell a preview its URL. The server asks every new passkey for PRF. `pnpm auth:migration` writes Better Auth's tables as D1 migrations | — |
 | 2026-09-27 | 2.7, 2.9 | The deploy pipeline: Workers Builds applies the migrations, then deploys or previews the app, with a build token that can edit D1. The Storybook deploys from `wrangler.storybook.jsonc` through a connection of its own, because Workers Builds deploys every `wrangler deploy` in a build to the connected Worker | — |
+| 2026-09-28 | 2.6 | The offline shell: a build plugin compiles `src/sw.ts` to `/sw.js`, with the precache list and a version hashed from every saved file, and leaves out the fonts for other scripts. The app registers it in the build only, and the Worker and the service worker share the rule for the server's own paths. The manifest is `/manifest.webmanifest`, with placeholder icons, and the theme script sets the bars' color for Day or Night | — |
 
 ## Appendix A. Glossary
 
