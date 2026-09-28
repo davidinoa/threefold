@@ -14,15 +14,17 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepare": "husky",
-    "deploy": "pnpm build && pnpm build-storybook && pnpm run release",
+    "deploy": "pnpm build && pnpm run release",
     "cf-typegen": "wrangler types",
     "test:watch": "vitest",
     "e2e": "vite build && pnpm db:migrate && playwright test",
     "dev-vars": "node scripts/dev-vars.ts",
     "db:migrate": "wrangler d1 migrations apply DB --local",
     "auth:migration": "node --disable-warning=ExperimentalWarning scripts/auth-migration.ts",
-    "release": "wrangler d1 migrations apply DB --remote && wrangler deploy && wrangler deploy --config wrangler.storybook.jsonc",
-    "release:preview": "wrangler d1 migrations apply DB --remote --config wrangler.previews-db.jsonc && wrangler preview && wrangler preview --config wrangler.storybook.jsonc"
+    "release": "wrangler d1 migrations apply DB --remote && wrangler deploy",
+    "release:preview": "wrangler d1 migrations apply DB --remote --config wrangler.previews-db.jsonc && wrangler preview",
+    "release:storybook": "wrangler deploy --config wrangler.storybook.jsonc",
+    "release:storybook:preview": "wrangler preview --config wrangler.storybook.jsonc"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
