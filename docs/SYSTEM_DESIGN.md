@@ -1368,7 +1368,7 @@ sequenceDiagram
 IndexedDB is the only copy of a jar that was never kept, and browsers can clear a site's storage. Four things protect it:
 
 - **Persistent storage.** The app asks for it (`navigator.storage.persist()`) after the first star lands.
-  - Browsers grant it by their own rules, for example when the app is on the Home Screen or used often.
+  - Browsers grant it by their own rules, without asking. In the spike (section 6, question 6), a first visit got it only as an installed app: the iPhone's Home Screen app, and Chrome's installed app on the Mac. Browser tabs were refused, though Chrome can also grant a tab for engagement or a bookmark.
   - Once granted, it protects the jar when the device runs short of space.
 - **The Home Screen.** On the iPhone, a website's storage is cleared after seven days without a visit, even when persistent storage is granted. Apps on the Home Screen, and web apps in the Mac's Dock, are exempt.
 - **"Keep this jar,"** offered after the first three stars (F-24).
@@ -1527,6 +1527,10 @@ There's no separate browser tier for Dexie and the sync engine, because the end-
      - The Vitest addon runs every story as a test in Chromium, and an accessibility violation fails its story.
      - The addon supports Vitest 3 and 4 only, so the app stays on Vitest 4 until it supports 5.
 6. **Persistent storage** (with the service worker). *Why it matters:* a jar that was never kept has no other copy. Check whether `persist()` is granted on both test devices, in the browser and from the Home Screen.
+   - **Answered on 2026-09-28, in a spike on the offline shell: on a first visit, only an installed app gets it.**
+     - On the iPhone, Safari refused it, and the app on the Home Screen got it. WebKit names the Home Screen as what it looks for.
+     - On the Mac, a Chrome tab was refused, and Chrome's installed app got it. Chrome also grants it for engagement, a bookmark, or permission to send notifications, and weighs each request afresh, so a tab used daily may earn it later. The spike didn't test that.
+     - **What it settles:** in a browser tab, a jar that was never kept relies on "Keep this jar" and "Save a copy" (5.4). The app still asks after the first star wherever it runs, because an installed app says yes. The PRD proposes more for tabs, for review: asking again while it's refused, wording that fits where the app runs, and a monthly reminder to save a copy.
 7. **Sync against D1's limits** (before sync). *Why it matters:* a sync that goes over a limit fails.
    - Confirm how batch statements count toward the 50-query limit, and size the push to fit. D1's docs don't say.
    - Confirm whether the rate-limiting binding works on Workers Free.
@@ -1723,6 +1727,7 @@ How changes are recorded:
 | 2026-09-27 | 2.5, 2.7, 3.5, 4.1, 5.10 | Better Auth is set up. Previews take their RP ID from the hostname they're served on, checked against a pattern in their config, because Cloudflare doesn't tell a preview its URL. The server asks every new passkey for PRF. `pnpm auth:migration` writes Better Auth's tables as D1 migrations | — |
 | 2026-09-27 | 2.7, 2.9 | The deploy pipeline: Workers Builds applies the migrations, then deploys or previews the app, with a build token that can edit D1. The Storybook deploys from `wrangler.storybook.jsonc` through a connection of its own, because Workers Builds deploys every `wrangler deploy` in a build to the connected Worker | — |
 | 2026-09-28 | 2.6 | The offline shell: a build plugin compiles `src/sw.ts` to `/sw.js`, with the precache list and a version hashed from every saved file, and leaves out the fonts for other scripts. The app registers it in the build only, and the Worker and the service worker share the rule for the server's own paths. The manifest is `/manifest.webmanifest`, with placeholder icons, and the theme script sets the bars' color for Day or Night | — |
+| 2026-09-28 | 5.4, 6 (question 6) | The persistent-storage spike ran: on a first visit, only the installed app got persistent storage on both test devices, from the iPhone's Home Screen and as Chrome's app on the Mac. Browser tabs were refused, though Chrome can grant a tab later for engagement or a bookmark | — |
 
 ## Appendix A. Glossary
 

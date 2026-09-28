@@ -202,7 +202,7 @@ Story 1 sets up the project before any product code, and every other story build
 120. As a writer, I want to add Threefold to my Home Screen and open it from there, so that it's one tap away and my stars aren't cleared after a week away. (F-32, §5.4)
 121. As a writer, I want updates to download in the background and take effect the next time I open the app, so that nothing changes under me mid-sentence. (§2.6)
 122. As a writer whose app is too old for the server, I want to be told that a new version is ready and switch when I tap, so that sync keeps working. (§5.3)
-123. As a writer with a never-kept jar, I want Threefold to ask the browser to keep its storage after my first star, so that my only copy isn't cleared. (N-3, §5.4)
+123. As a writer with a never-kept jar, I want Threefold to ask the browser to keep its storage after my first star, and again after later done days while it's refused, so that my only copy isn't cleared. (N-3, §5.4, new)
 
 ### Settings
 
@@ -765,7 +765,7 @@ Insights' "days running" tile and its "napping" lines aren't deferred. "Jars on 
 
 ### Decisions to confirm in review
 
-Four product questions are still open. Each comes with a recommendation.
+Five product questions are still open. Each comes with a recommendation.
 
 **1. What "kept" means (recommended: a jar with a passkey).** It's the meaning that carries the most weight: the jar's two states, the offer ("Keep this jar?"), and "Open my jar" all rest on it. The other two meanings get plain words:
 
@@ -815,6 +815,10 @@ Deletion claims need the same care. The server's database keeps seven days of hi
 
 "There's no undo" is true, and enough.
 
+A never-kept jar's wording should also fit where it runs. In a browser tab, nothing on the device protects the jar on a first visit, and Safari clears a site's storage after a week away (§5.4, and §6, question 6). Recommended: in a tab without persistent storage, the keep offer and Settings' "Your jar" card say the jar "lives in this browser, which can clear it." An installed app keeps "lives on this device."
+
+**5. A reminder to save a copy (recommended: once a month, at the seal).** A writer who neither installs the app nor keeps the jar has only "Save a copy" to fall back on. When a month's jar is sealed, a jar that's neither kept nor persistent offers "Save a copy" once, and "Not now" costs nothing, as with the keep offer. The alternative is no reminder, which leaves "Save a copy" in Settings.
+
 ### Clarifications this PRD adds
 
 Once they're accepted, these go into the system design through §10:
@@ -832,6 +836,7 @@ Once they're accepted, these go into the system design through §10:
 11. Signing out with stars still waiting counts them and offers to save a copy first (story 104).
 12. A rewritten star stays one line of at most 120 characters (story 63).
 13. The format of "Save a copy" (story 127).
+14. The app asks for persistent storage after the first star, and again after each later done day while it's refused. Chrome weighs engagement and never asks the writer, so a tab used daily can earn it (story 123).
 
 ### Draft copy still to fix
 
