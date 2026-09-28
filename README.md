@@ -8,6 +8,7 @@ Threefold is being set up: tooling, checks, and deploys come before product code
 
 - What you write is saved on your device first, so the app is instant and works offline.
 - Keeping your jar with a passkey syncs it across your devices through Threefold's server. The server stores what you write only to sync it, and never reads, searches, logs, or analyzes it.
+- When something breaks, the app sends a short error report: the error's name, its message and stack with any quoted text removed, the page's route, the build, and a rough browser name, such as "Chrome 141, macOS". Reports are built to leave out anything you wrote: no input, no page text, and nothing from the jar.
 - End-to-end encryption isn't built yet. It comes before Threefold is shared, and until then the app claims no more privacy than it has.
 
 ## Run it
@@ -32,21 +33,21 @@ pnpm exec playwright install chromium webkit
 
 ## Scripts
 
-| Script                 | What it does                                                                                                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`             | Runs the app at localhost:3000, with its server in the Workers runtime and a local D1 database                                                                      |
-| `pnpm build`           | Builds the app: the static files, including the shell `_shell.html`, in `dist/client`, and the Worker in `dist/server`                                              |
-| `pnpm storybook`       | Runs the design system's Storybook, a site that shows each component on its own, at localhost:6006                                                                  |
-| `pnpm build-storybook` | Builds the Storybook as a static site                                                                                                                               |
-| `pnpm test`            | Builds, then runs the tests: the jar's rules in Node, the built Worker in the Workers runtime, and every story in Chromium, where an accessibility problem fails it |
-| `pnpm test:watch`      | Reruns the tests as files change. Run `pnpm build` first, for the Worker's tests                                                                                    |
-| `pnpm e2e`             | Builds, then runs the end-to-end tests against the Worker, in Chromium, in WebKit on an iPhone-sized screen, and with reduced motion                                |
-| `pnpm lint`            | Lints with oxlint, including rules that use TypeScript's types                                                                                                      |
-| `pnpm format`          | Fixes what oxlint can, then formats with oxfmt                                                                                                                      |
-| `pnpm check`           | Checks the formatting without changing any file                                                                                                                     |
-| `pnpm typecheck`       | Type-checks with TypeScript 7                                                                                                                                       |
-| `pnpm cf-typegen`      | Regenerates `worker-configuration.d.ts`, the Worker's types, after a change to `wrangler.jsonc`                                                                     |
-| `pnpm run deploy`      | Builds and deploys to Cloudflare by hand. Normally Workers Builds deploys on merge to `main`                                                                        |
+| Script                 | What it does                                                                                                                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pnpm dev`             | Runs the app at localhost:3000, with its server in the Workers runtime and a local D1 database                                                                                                   |
+| `pnpm build`           | Builds the app: the static files, including the shell `_shell.html`, in `dist/client`, and the Worker in `dist/server`                                                                           |
+| `pnpm storybook`       | Runs the design system's Storybook, a site that shows each component on its own, at localhost:6006                                                                                               |
+| `pnpm build-storybook` | Builds the Storybook as a static site                                                                                                                                                            |
+| `pnpm test`            | Builds, then runs the tests: the jar's rules and the honest-wording check in Node, the built Worker in the Workers runtime, and every story in Chromium, where an accessibility problem fails it |
+| `pnpm test:watch`      | Reruns the tests as files change. Run `pnpm build` first, for the Worker's tests                                                                                                                 |
+| `pnpm e2e`             | Builds, then runs the end-to-end tests against the Worker, in Chromium, in WebKit on an iPhone-sized screen, and with reduced motion                                                             |
+| `pnpm lint`            | Lints with oxlint, including rules that use TypeScript's types                                                                                                                                   |
+| `pnpm format`          | Fixes what oxlint can, then formats with oxfmt                                                                                                                                                   |
+| `pnpm check`           | Checks the formatting without changing any file                                                                                                                                                  |
+| `pnpm typecheck`       | Type-checks with TypeScript 7                                                                                                                                                                    |
+| `pnpm cf-typegen`      | Regenerates `worker-configuration.d.ts`, the Worker's types, after a change to `wrangler.jsonc`                                                                                                  |
+| `pnpm run deploy`      | Builds and deploys to Cloudflare by hand. Normally Workers Builds deploys on merge to `main`                                                                                                     |
 
 ## Commits and pull requests
 

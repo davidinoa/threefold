@@ -19,7 +19,8 @@ updates:
           - "@better-auth/*"
     ignore:
       # Storybook's Vitest addon supports Vitest 3 and 4 only (system design
-      # §6, question 5). Drop this once it supports 5.
+      # §6, question 5), and Cloudflare's Vitest plugin needs 4. Drop this
+      # once both support 5.
       - dependency-name: vitest
         update-types: ["version-update:semver-major"]
       - dependency-name: "@vitest/*"

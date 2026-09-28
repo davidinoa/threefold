@@ -1135,8 +1135,10 @@ type ErrorReport = {
 ```
 
 - The Worker writes each report to Workers Logs as one JSON line and answers `204` (success, no content). Nothing goes into D1.
+- Anything that isn't exactly a report gets `400`, such as an extra field, a field that's too long, or a route with search params. A body over 8 KB gets `413`. Neither is logged, because its body could hold anything.
 - The client sends at most five reports per page load. It never sends input values, page text, or IndexedDB contents.
-- Quoted text is replaced because error messages sometimes quote the data that caused them, which could be a line you wrote.
+- It reports uncaught errors, unhandled rejections, and errors that a route's error boundary catches. A thrown value that isn't an `Error` could be anything, so only its type is sent.
+- Quoted text is replaced because error messages sometimes quote the data that caused them, which could be a line you wrote. The Worker replaces it again before logging, so a client that missed some still can't put it in the logs.
 
 ### 4.4 Client seams
 
@@ -1382,27 +1384,38 @@ A Content-Security-Policy (CSP) is a response header that tells the browser what
 
 | Directive | What it allows | Why |
 |---|---|---|
+| `default-src 'self'` | Anything the other directives don't name, such as fonts and media, only from our own site | Closes the gaps between the other directives |
 | `script-src 'self'` plus hashes | Scripts from our own site, plus the shell's few inline scripts, each listed by the hash of its exact contents | An injected script can't run |
 | `style-src 'self' 'unsafe-inline'` | Our styles, plus styles that libraries insert at runtime | Needed by the UI libraries |
 | `connect-src 'self'` | Network requests only to our own server | Nothing can send data elsewhere |
 | `img-src 'self' data:` | Images from our site, or inlined | No third-party images |
 | `worker-src 'self'`, `manifest-src 'self'` | Our service worker and manifest | — |
+| `form-action 'self'` | Forms submit only to our own site | No form can send data elsewhere |
 | `object-src 'none'`, `base-uri 'none'`, `frame-ancestors 'none'` | No plugins, no base-URL tricks, and no embedding in other sites | Closes old attack routes |
 
 There are no third-party origins anywhere.
+
+How the hashes are made:
+
+- **From the finished shell.** The router's state script changes with every build, and Start prerenders the shell after it builds the Worker. So a Vite plugin hashes the shell's inline scripts at the end of the build and writes the hashes into the built Worker.
+- **As the browser reads them.** The HTML parser turns a NUL character into U+FFFD before the browser hashes a script, and the router's state script contains NULs. The plugin makes the same change before hashing.
+- **On every path to the shell.** Cloudflare serves static files before the Worker runs, so the shell's own paths, `/_shell` and `/_shell.html`, are set to run the Worker first. Otherwise they'd come without the CSP.
 
 Other headers:
 
 | Header | What it does |
 |---|---|
-| HSTS (`Strict-Transport-Security`) | Tells browsers to only ever use HTTPS for this site |
+| HSTS (`Strict-Transport-Security`) | Tells browsers to only ever use HTTPS for this site, for a year: `max-age=31536000; includeSubDomains` |
 | `X-Content-Type-Options: nosniff` | Stops the browser from guessing a file's type |
 | `Referrer-Policy: no-referrer` | Doesn't tell other sites which page a visitor came from |
-| `Permissions-Policy` | Allows only `publickey-credentials-create`, `publickey-credentials-get`, and, for shake, `accelerometer` and `gyroscope` |
+| `Permissions-Policy` | Allows only `publickey-credentials-create`, `publickey-credentials-get`, and, for shake, `accelerometer` and `gyroscope`. It turns off device features the app doesn't use, such as the camera, the microphone, and location |
+
+The Worker sends these on everything it answers. Static files come straight from Cloudflare, without them.
 
 And:
 
-- **The server never reads text.** No route searches, filters, or logs star text, and request bodies stay out of logs.
+- **The server never reads text.** No route searches, filters, or logs star text, and request bodies stay out of logs. A test sends bodies to each kind of route and checks that none reach the logs.
+- **Workers Logs keeps only what the Worker logs.** Invocation logs are off, because they'd record each request's details (N-5).
 - **Schema allowlist:** a test fails if D1 gains a column that isn't on the list.
 - **Honest wording:** a test fails if the copy says "not even us," "only you can open," or anything like them while `ENCRYPTED` is false. It runs until encryption ships.
 - **Passkeys** are bound to the exact production hostname, and previews stay on their own hostnames.
@@ -1679,6 +1692,7 @@ How changes are recorded:
 | 2026-09-27 | 1.2 (F-2), 4.4, 5.10 | The empty-line animation is a wiggle, so "nudge" means only the deferred notification. The domain's seam is one view per screen. Testing uses three seams: end to end, the jar's rules, and the server's API | — |
 | 2026-09-27 | 6 (question 5) | The Storybook spike ran at setup: Storybook builds on a Vite config of its own, and its Vitest addon runs the stories as tests that accessibility errors fail. Vitest stays on 4 until the addon supports 5 | — |
 | 2026-09-27 | 2.2, 2.6, 6 (question 4) | The shell spike ran with the Cloudflare config: the build defines `TSS_SHELL`, so the shell holds only the root route, and the Worker answers every page with it, byte for byte. The service worker precaches it from `/` | — |
+| 2026-09-27 | 4.3, 5.7 | The security baseline: the CSP adds `default-src` and `form-action`, the build hashes the shell's scripts the way the browser reads them, and the shell's own paths run the Worker first. `/api/errors` turns away anything but an exact report, without logging it. Workers Logs keeps no invocation logs | — |
 
 ## Appendix A. Glossary
 

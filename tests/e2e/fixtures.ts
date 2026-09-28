@@ -3,8 +3,9 @@ import { test as base, expect } from "@playwright/test"
 type CspReporter = { reportCspViolation(violation: string): Promise<void> }
 
 // Guards on every test (PRD, Testing Decisions): nothing may load from
-// another origin, and nothing may break the Content-Security-Policy.
-export const test = base.extend<{ guards: void }>({
+// another origin, and nothing may break the Content-Security-Policy. A test
+// that breaks the CSP on purpose checks guards.cspViolations, then empties it.
+export const test = base.extend<{ guards: { cspViolations: string[] } }>({
   guards: [
     async ({ page, baseURL }, use) => {
       const origin = new URL(baseURL ?? "http://localhost").origin
@@ -16,9 +17,9 @@ export const test = base.extend<{ guards: void }>({
         }
       })
 
-      const violations: string[] = []
+      const cspViolations: string[] = []
       await page.exposeFunction("reportCspViolation", (violation: string) => {
-        violations.push(violation)
+        cspViolations.push(violation)
       })
       await page.addInitScript(() => {
         document.addEventListener("securitypolicyviolation", (event) => {
@@ -28,10 +29,10 @@ export const test = base.extend<{ guards: void }>({
         })
       })
 
-      await use()
+      await use({ cspViolations })
 
       expect(otherOrigins, "requests to other origins").toEqual([])
-      expect(violations, "Content-Security-Policy violations").toEqual([])
+      expect(cspViolations, "Content-Security-Policy violations").toEqual([])
     },
     { auto: true },
   ],
