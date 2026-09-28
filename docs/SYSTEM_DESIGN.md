@@ -509,13 +509,17 @@ sequenceDiagram
 Details:
 
 - **Better Auth with `@better-auth/passkey`**, mounted at `/api/auth/$` (ADR 0001).
-  - Sign-up is passkey-only: `registration.requireSession: false`, with `resolveUser` and `afterVerification` creating the user.
-  - Better Auth requires an email and a name on every user, so each user gets placeholders, such as `<id>@users.invalid`.
+  - Sign-up is passkey-only: `registration.requireSession: false`, with `resolveUser` and `afterVerification` creating the user. The account exists only once its passkey checks out.
+  - Better Auth requires an email and a name on every user, so each user gets placeholders: `<id>@users.invalid`, and the name "Threefold", which is also what the password manager shows for the passkey.
+  - Passkeys are discoverable (`residentKey: "required"`), so opening a jar needs no username.
+  - The options live in `src/lib/auth/options.ts`, shared by the Worker, the migration script, and the tests, so the tables and the behavior can't drift apart.
 - **The RP ID** ("relying party" ID) is the domain a passkey belongs to. The browser only offers a passkey on that domain.
-  - The RP ID and origin come from each environment's config, never from request headers.
+  - The RP ID and origin come from each environment's config (`AUTH_RP_ID` and `AUTH_ORIGINS`), never from request headers, with one checked exception for previews below.
   - In production, the RP ID is exactly `threefold.davidinoa.workers.dev`.
   - It's never `davidinoa.workers.dev`, which every Worker and preview on the account could use.
-- **Passkeys are created with `extensions: { prf: {} }`.** PRF is a WebAuthn extension that lets a passkey produce a secret for encryption. Asking for it now means today's passkeys can carry end-to-end encryption later (section 7).
+  - A preview can't name its own: Cloudflare doesn't tell a preview its URL. So a preview's config holds a pattern, `*-threefold.davidinoa.workers.dev`, and the preview uses the hostname it's served on only when that matches. Cloudflare sends a preview only its own hostnames, so a request can't claim another one.
+  - On any other hostname, `/api/auth/*` answers `404`.
+- **Every new passkey asks for PRF.** PRF is a WebAuthn extension that lets a passkey produce a secret for encryption. Asking for it now means today's passkeys can carry end-to-end encryption later (section 7). The server puts `prf: {}` in its registration options, so no client call can leave it out.
 - **Sessions:** after sign-in, the server remembers you through a session, tied to a cookie in your browser.
   - The cookie is HttpOnly, which means JavaScript can't read it.
   - Better Auth's default session lasts 7 days. Threefold sets `expiresIn` to a year, renewed as you use the app (`updateAge`, at most daily).
@@ -596,7 +600,8 @@ flowchart LR
 |---|---|---|---|
 | Where | `localhost` on the Mac, or a stable tunnel hostname for the phone | a Worker Preview URL per branch | `threefold.davidinoa.workers.dev` |
 | Database | a local D1, run by the Vite plugin | its own D1 | the production D1 |
-| RP ID | the hostname in use | the preview's hostname | `threefold.davidinoa.workers.dev` |
+| RP ID | the hostname in use | the preview's hostname, when it matches the pattern in its config | `threefold.davidinoa.workers.dev` |
+| Config and secret | `.dev.vars`, written by `pnpm dev-vars` and ignored by git | `previews.vars` in `wrangler.jsonc`, and the Previews Base's secret | `vars` in `wrangler.jsonc`, and a Worker secret |
 | Deploys | — | Workers Builds, on each push to a branch | Workers Builds, on merge to `main` |
 
 Workers Builds is Cloudflare's service that builds and deploys the Worker from the GitHub repo. A passkey works only on the hostname it was made on, so test passkeys don't carry over between previews.
@@ -937,7 +942,7 @@ erDiagram
   }
 ```
 
-Better Auth's tables use its own camelCase column names, and the diagram shows only some of their columns. Better Auth's CLI can't open a D1 binding, so its tables are generated against a local SQLite file and committed as a D1 migration: a versioned script that changes the database's structure.
+Better Auth's tables use its own camelCase column names, and the diagram shows only some of their columns. Better Auth can't open a D1 binding from Node, so `pnpm auth:migration` works out its tables' SQL against SQLite in memory, after replaying the migrations already committed, and writes what's missing as the next D1 migration: a versioned script that changes the database's structure. The first is `migrations/0001_better_auth.sql`.
 
 Threefold adds three tables:
 
@@ -1022,7 +1027,7 @@ Checked against `better-auth` and `@better-auth/passkey` 1.7.6.
 
 | Action | Call |
 |---|---|
-| Keep this jar (sign up) | `authClient.passkey.addPasskey({ name, extensions: { prf: {} } })`, with the session created on verification |
+| Keep this jar (sign up) | `authClient.passkey.addPasskey({ createSession: true })`, with the session created on verification. The server's registration options ask for PRF, so no call can leave it out |
 | Open my jar (sign in) | `authClient.signIn.passkey()` |
 | List passkeys | `authClient.useListPasskeys()`, which refreshes itself after a passkey is added, updated, or deleted, and after sign-out |
 | Add and delete passkeys | `authClient.passkey.addPasskey()`, `.deletePasskey({ id })` |
@@ -1450,6 +1455,8 @@ Tests plug in at three seams. Each seam is the highest point that can see what i
 
 The server's tests run against the Worker as `vite build` makes it, because Start's server code only exists after the build, and that's also what ships. So `pnpm test` builds first.
 
+They sign in through a test-only Better Auth: the Worker's own options plus Better Auth's `testUtils` plugin, on the same D1 and secret. The Worker accepts the session it makes, so no test-only route ships. The end-to-end tests make real passkeys in Chromium's virtual authenticator, and copy them to a second browser context to open the jar on another device.
+
 What the end-to-end tests can control:
 
 - **Time:** Playwright's clock moves the date, and each browser context sets its own time zone.
@@ -1695,6 +1702,7 @@ How changes are recorded:
 | 2026-09-27 | 2.2, 2.6, 6 (question 4) | The shell spike ran with the Cloudflare config: the build defines `TSS_SHELL`, so the shell holds only the root route, and the Worker answers every page with it, byte for byte. The service worker precaches it from `/` | — |
 | 2026-09-27 | 4.3, 5.7 | The security baseline: the CSP adds `default-src` and `form-action`, the build hashes the shell's scripts the way the browser reads them, and the shell's own paths run the Worker first. `/api/errors` turns away anything but an exact report, without logging it. Workers Logs keeps no invocation logs | — |
 | 2026-09-27 | 2.2 | The app's content renders only once the shell has hydrated, which avoids React error #418 wherever a route's code is already loaded (TanStack/router#8473) | — |
+| 2026-09-27 | 2.5, 2.7, 3.5, 4.1, 5.10 | Better Auth is set up. Previews take their RP ID from the hostname they're served on, checked against a pattern in their config, because Cloudflare doesn't tell a preview its URL. The server asks every new passkey for PRF. `pnpm auth:migration` writes Better Auth's tables as D1 migrations | — |
 
 ## Appendix A. Glossary
 

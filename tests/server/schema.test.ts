@@ -1,21 +1,77 @@
-/// <reference types="@cloudflare/vitest-plugin/types" />
-import { type D1Migration, applyD1Migrations } from "cloudflare:test"
 import { env } from "cloudflare:workers"
-import { beforeAll, expect, it } from "vitest"
+import { expect, it } from "vitest"
 
 // Every column the server may store, table by table. A new column fails this
 // test until it's listed here, so each one gets a review (system design §5.7).
-// Better Auth's tables arrive with their migration.
-const ALLOWED_COLUMNS: Record<string, string[]> = {}
-
-// Read in Node, from migrations/ (vitest.config.ts).
-const { TEST_MIGRATIONS } = env as Cloudflare.Env & {
-  TEST_MIGRATIONS: D1Migration[]
+const ALLOWED_COLUMNS: Record<string, string[]> = {
+  // Better Auth's tables (migrations/0001_better_auth.sql). Some columns stay
+  // empty, because Threefold signs in with passkeys only and stores nothing
+  // that identifies anyone (N-5).
+  account: [
+    // Better Auth's, for passwords and social sign-in. No rows: passkeys
+    // don't use it.
+    "accessToken",
+    "accessTokenExpiresAt",
+    "accountId",
+    "createdAt",
+    "id",
+    "idToken",
+    "password",
+    "providerId",
+    "refreshToken",
+    "refreshTokenExpiresAt",
+    "scope",
+    "updatedAt",
+    "userId",
+  ],
+  passkey: [
+    "aaguid",
+    "backedUp",
+    "counter",
+    "createdAt",
+    "credentialID",
+    "deviceType",
+    "id",
+    // A coarse device label, such as "iPhone".
+    "name",
+    "publicKey",
+    "transports",
+    "userId",
+  ],
+  session: [
+    "createdAt",
+    "expiresAt",
+    "id",
+    // Always empty: IP tracking is off.
+    "ipAddress",
+    "token",
+    "updatedAt",
+    // Always empty: a hook drops it before the session is stored.
+    "userAgent",
+    "userId",
+  ],
+  user: [
+    "createdAt",
+    // A placeholder, <id>@users.invalid: Better Auth needs one.
+    "email",
+    "emailVerified",
+    "id",
+    // Always empty.
+    "image",
+    // A placeholder too: "Threefold".
+    "name",
+    "updatedAt",
+  ],
+  // Passkey challenges, each kept only until its ceremony finishes.
+  verification: [
+    "createdAt",
+    "expiresAt",
+    "id",
+    "identifier",
+    "updatedAt",
+    "value",
+  ],
 }
-
-beforeAll(async () => {
-  await applyD1Migrations(env.DB, TEST_MIGRATIONS)
-})
 
 it("stores only the columns on the allowlist", async () => {
   // D1's own tables and SQLite's are left out.

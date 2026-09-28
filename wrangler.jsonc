@@ -18,6 +18,13 @@
   // request's details, and the server stores nothing that identifies anyone
   // (N-5).
   "observability": { "enabled": true, "logs": { "invocation_logs": false } },
+  // The site passkeys belong to, and the origins that may use it (system design
+  // §2.5). Local development sets its own in .dev.vars, and BETTER_AUTH_SECRET
+  // is a secret, set with wrangler secret put.
+  "vars": {
+    "AUTH_RP_ID": "threefold.davidinoa.workers.dev",
+    "AUTH_ORIGINS": "https://threefold.davidinoa.workers.dev",
+  },
   "d1_databases": [
     {
       "binding": "DB",
@@ -25,9 +32,13 @@
       "database_id": "a3a3c94b-ca58-4215-aee9-9c79f7ede3e4",
     },
   ],
-  // Worker Previews don't inherit production's bindings. Every preview shares
-  // the preview database, and a branch that changes the schema can bind its own.
+  // Worker Previews don't inherit production's vars or bindings. Every preview
+  // shares the preview database, and a branch that changes the schema can bind
+  // its own.
   "previews": {
+    // Cloudflare doesn't tell a preview its own URL, so this is a pattern: a
+    // preview uses the hostname it's served on only when it matches.
+    "vars": { "AUTH_RP_ID": "*-threefold.davidinoa.workers.dev" },
     "d1_databases": [
       {
         "binding": "DB",

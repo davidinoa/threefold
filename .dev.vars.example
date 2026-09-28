@@ -1,0 +1,12 @@
+# The Worker's local vars and secrets, which override wrangler.jsonc's. Run
+# pnpm dev-vars to copy this to .dev.vars, which git ignores, with a new
+# BETTER_AUTH_SECRET.
+
+# Signs Better Auth's cookies. Production and previews get theirs from
+# wrangler secret put and wrangler preview base-config secret put.
+BETTER_AUTH_SECRET=
+
+# The site passkeys belong to, and the origins that may use it: vite dev on
+# port 3000, and vite preview on 4173 for the end-to-end tests.
+AUTH_RP_ID=localhost
+AUTH_ORIGINS="http://localhost:3000 http://localhost:4173"
