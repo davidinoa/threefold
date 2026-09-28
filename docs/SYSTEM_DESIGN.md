@@ -610,10 +610,10 @@ What Workers Builds runs, after it installs the dependencies with pnpm 11.27.1 (
 
 | | On `main` | On other branches |
 |---|---|---|
-| Build | `pnpm build && pnpm build-storybook` | the same |
-| Deploy | `pnpm run release`: the migrations to the production database, then the app and the Storybook | `pnpm run release:preview`: the migrations to the previews' database, then a preview of each |
+| Build | `pnpm build` | `pnpm build` |
+| Deploy | `pnpm run release`: the migrations to the production database, then `wrangler deploy` | `pnpm run release:preview`: the migrations to the previews' database, then `wrangler preview` |
 
-- One connection deploys both Workers. Workers Builds checks that the connected Worker's name matches `wrangler.jsonc`, so a second connection for the Storybook, with its own config file, could fail that check.
+- Each Worker has a connection of its own. In Workers Builds, Wrangler deploys to the connected Worker whatever name its config gives (`WRANGLER_CI_OVERRIDE_NAME`), so one connection can't deploy two Workers.
 - Migrations run before the new code, so the code never meets an older schema.
 - The previews' migrations use `wrangler.previews-db.jsonc`, a config that names only that database, because `wrangler d1` commands don't look under `previews`.
 - The build's API token needs D1 edit access for the migrations, which the token Workers Builds creates by default doesn't have.
@@ -672,7 +672,7 @@ flowchart LR
 - **Stories are tests too:** Storybook's Vitest addon runs every story as a test, and accessibility errors fail it (5.10).
 - **Hosting:** Workers Builds deploys the static build to its own Worker, with a preview URL for each branch, like the app. Requests for static files are free and don't count toward the daily request limit (5.2).
   - `wrangler.storybook.jsonc` configures that Worker: assets only, from `storybook-static`, with no code.
-  - The app's Workers Builds connection builds and deploys it too, right after the app (2.7). Its preview URL is in the build's log.
+  - A Workers Builds connection of its own runs `pnpm build-storybook`, then `pnpm run release:storybook` on `main`, or `pnpm run release:storybook:preview` on other branches (2.7).
 - **The draft spec is temporary.**
   - `docs/design-system/` holds the cleaned-up draft: one file per component, plus the foundations and exact data.
   - The PR that lands a component's stories and docs page also deletes that component's spec file, so each component has one source of truth at a time.
@@ -1718,7 +1718,7 @@ How changes are recorded:
 | 2026-09-27 | 4.3, 5.7 | The security baseline: the CSP adds `default-src` and `form-action`, the build hashes the shell's scripts the way the browser reads them, and the shell's own paths run the Worker first. `/api/errors` turns away anything but an exact report, without logging it. Workers Logs keeps no invocation logs | — |
 | 2026-09-27 | 2.2 | The app's content renders only once the shell has hydrated, which avoids React error #418 wherever a route's code is already loaded (TanStack/router#8473) | — |
 | 2026-09-27 | 2.5, 2.7, 3.5, 4.1, 5.10 | Better Auth is set up. Previews take their RP ID from the hostname they're served on, checked against a pattern in their config, because Cloudflare doesn't tell a preview its URL. The server asks every new passkey for PRF. `pnpm auth:migration` writes Better Auth's tables as D1 migrations | — |
-| 2026-09-27 | 2.7, 2.9 | The deploy pipeline: one Workers Builds connection applies the migrations, then deploys or previews the app and the Storybook, with a build token that can edit D1 | — |
+| 2026-09-27 | 2.7, 2.9 | The deploy pipeline: Workers Builds applies the migrations, then deploys or previews the app, with a build token that can edit D1. The Storybook deploys from `wrangler.storybook.jsonc` through a connection of its own, because Workers Builds deploys every `wrangler deploy` in a build to the connected Worker | — |
 
 ## Appendix A. Glossary
 
