@@ -10,14 +10,21 @@ type ThemeState = {
 
 const KEY = "theme"
 const DARK = "(prefers-color-scheme: dark)"
+// The browser's bars take the page's color: the --background tokens in
+// src/styles.css, in hex. The manifest has Day's too.
+const BARS = { light: "#f8f3ea", dark: "#111127" }
 
 // Runs before first paint and before hydration, so the right palette is there from the first frame.
 // The root route renders it with <ScriptOnce>, so this file never imports the router.
+// It adds the theme-color tag itself, so React never renders one that differs from the page.
 export const themeScript = `(function () { try {
   var t = localStorage.getItem("${KEY}") || "system"
   var d = t === "dark" || (t === "system" && matchMedia("${DARK}").matches)
   document.documentElement.classList.toggle("dark", d)
   document.documentElement.style.colorScheme = d ? "dark" : "light"
+  var m = document.querySelector('meta[name="theme-color"]')
+  if (!m) { m = document.createElement("meta"); m.name = "theme-color"; document.head.appendChild(m) }
+  m.content = d ? "${BARS.dark}" : "${BARS.light}"
 } catch (e) {} })()`
 
 const listeners = new Set<() => void>()
@@ -36,6 +43,13 @@ function apply(theme: Theme) {
   const dark = theme === "dark" || (theme === "system" && systemDark())
   document.documentElement.classList.toggle("dark", dark)
   document.documentElement.style.colorScheme = dark ? "dark" : "light"
+  let bars = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+  if (!bars) {
+    bars = document.createElement("meta")
+    bars.name = "theme-color"
+    document.head.appendChild(bars)
+  }
+  bars.content = dark ? BARS.dark : BARS.light
 }
 
 function subscribe(onChange: () => void) {

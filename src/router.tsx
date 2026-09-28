@@ -1,6 +1,7 @@
 import { createRouter as createTanStackRouter } from "@tanstack/react-router"
 
 import { installErrorReporting, reportCaughtError } from "@/lib/error-reports"
+import { registerServiceWorker } from "@/lib/service-worker"
 
 import { routeTree } from "./routeTree.gen"
 
@@ -15,11 +16,13 @@ export function getRouter() {
     defaultOnCatch: reportCaughtError,
   })
 
-  // The prerender runs this on the server, where there's nothing to report.
+  // The prerender runs this on the server, where there's nothing to report
+  // and no service worker.
   if (typeof window !== "undefined") {
     installErrorReporting(
       () => router.state.matches.at(-1)?.routeId ?? "unknown"
     )
+    registerServiceWorker()
   }
 
   return router
