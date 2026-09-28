@@ -1432,7 +1432,9 @@ Tests plug in at three seams. Each seam is the highest point that can see what i
 |---|---|---|---|
 | The app, end to end: the main seam | Playwright, with a virtual authenticator (a fake passkey device for tests) | Chromium, plus WebKit for the journeys that need no passkey | Every user story's journey, against the production build with a local D1. See below |
 | The jar's rules | Vitest | Node | The views in 4.4, built from stars and today's day key: the cycle and day keys, rounds, Today's status, the week tally, month stats, the pile, insights, the year card, the shake pick, the keep offer, and the saved copy's text |
-| The server's API | `@cloudflare/vitest-pool-workers` | The Workers runtime, with a local D1 | `/api/sync` (the merge, `seq`, pages, `reset`, and caps), `/api/jar/empty`, `/api/errors`, the shell's headers, `EXPLAIN QUERY PLAN` checks, and the schema allowlist |
+| The server's API | `@cloudflare/vitest-plugin`, the renamed `@cloudflare/vitest-pool-workers` | The Workers runtime, with a local D1, against the built Worker | `/api/sync` (the merge, `seq`, pages, `reset`, and caps), `/api/jar/empty`, `/api/errors`, the shell's headers, `EXPLAIN QUERY PLAN` checks, and the schema allowlist |
+
+The server's tests run against the Worker as `vite build` makes it, because Start's server code only exists after the build, and that's also what ships. So `pnpm test` builds first.
 
 What the end-to-end tests can control:
 

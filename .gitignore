@@ -24,3 +24,8 @@ todos.json
 # Storybook's build output and logs
 *storybook.log
 storybook-static
+
+# Playwright's results and reports
+test-results/
+playwright-report/
+blob-report/
