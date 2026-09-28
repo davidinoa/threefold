@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // The design system's Storybook, a second Worker that serves only static
+  // files, at threefold-storybook.davidinoa.workers.dev (system design §2.9).
+  // Requests for static files are free, so it leaves the app's allowance alone.
+  "name": "threefold-storybook",
+  "compatibility_date": "2026-09-25",
+  "workers_dev": true,
+  "assets": { "directory": "./storybook-static" },
+}
