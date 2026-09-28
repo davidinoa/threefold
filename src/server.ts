@@ -1,6 +1,8 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry"
 import { env } from "cloudflare:workers"
 
+import { isServerPath } from "@/lib/server-paths"
+
 // A "sha256-…" hash for each inline script in the shell, separated by spaces.
 // The shell only exists once Start prerenders it, after this file is built,
 // so the build writes them in then (shellScriptHashes in vite.config.ts).
@@ -71,8 +73,7 @@ export default createServerEntry({
     const { pathname } = new URL(request.url)
     const isPage =
       (request.method === "GET" || request.method === "HEAD") &&
-      !pathname.startsWith("/api/") &&
-      !pathname.startsWith("/_serverFn/")
+      !isServerPath(pathname)
     if (isPage) {
       const shell = await env.ASSETS.fetch(new URL("/_shell.html", request.url))
       if (shell.ok) {

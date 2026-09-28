@@ -41,7 +41,7 @@ pnpm exec playwright install chromium webkit
 | Script                       | What it does                                                                                                                                                                                     |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `pnpm dev`                   | Runs the app at localhost:3000, with its server in the Workers runtime and a local D1 database                                                                                                   |
-| `pnpm build`                 | Builds the app: the static files, including the shell `_shell.html`, in `dist/client`, and the Worker in `dist/server`                                                                           |
+| `pnpm build`                 | Builds the app: the static files, including the shell `_shell.html` and the service worker `sw.js`, in `dist/client`, and the Worker in `dist/server`                                            |
 | `pnpm storybook`             | Runs the design system's Storybook, a site that shows each component on its own, at localhost:6006                                                                                               |
 | `pnpm build-storybook`       | Builds the Storybook as a static site                                                                                                                                                            |
 | `pnpm test`                  | Builds, then runs the tests: the jar's rules and the honest-wording check in Node, the built Worker in the Workers runtime, and every story in Chromium, where an accessibility problem fails it |
@@ -71,6 +71,8 @@ pnpm exec playwright install chromium webkit
 
 - `src/`: the app. `src/components/` is the design system, which never imports the rest of the app.
 - `src/lib/auth/`: accounts with Better Auth, passkeys only. `migrations/` holds the D1 migrations, starting with Better Auth's tables.
+- `src/sw.ts`: the service worker, which the build turns into `/sw.js`. It keeps the app on the device, so it opens with no connection.
+- `public/`: files served as they are, such as the web app manifest and the icons, which are placeholders for now.
 - `scripts/`: small Node scripts behind `pnpm dev-vars` and `pnpm auth:migration`.
 - `.storybook/`: the Storybook's config, with a Vite config of its own.
 - `docs/`: the PRD, the system design, the decision records in `docs/adr/`, and the design system's draft spec in `docs/design-system/`, which shrinks as components land in the Storybook.
