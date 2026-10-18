@@ -1,0 +1,4 @@
+/* Tailwind's preflight clears ol markers. Storybook's docs styles never set them back. */
+.sbdocs-content ol {
+  list-style: decimal;
+}

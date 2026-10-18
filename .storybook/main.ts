@@ -1,6 +1,11 @@
 import type { StorybookConfig } from "@storybook/react-vite"
 
 const config: StorybookConfig = {
+  tags: {
+    overview: {
+      excludeFromDocsStories: true,
+    },
+  },
   stories: ["../src/**/*.mdx", "../src/**/*.stories.{ts,tsx}"],
   addons: [
     "@storybook/addon-docs",
