@@ -1,5 +1,10 @@
-// src/components/theme-provider.tsx: shadcn's TanStack Start recipe, plus resolvedTheme and forcedTheme
-import { createContext, use, useMemo, useSyncExternalStore } from "react"
+import {
+  createContext,
+  use,
+  useMemo,
+  useSyncExternalStore,
+  useLayoutEffect,
+} from "react"
 
 export type Theme = "light" | "dark" | "system"
 type ThemeState = {
@@ -52,9 +57,13 @@ function apply(theme: Theme) {
   bars.content = dark ? BARS.dark : BARS.light
 }
 
+let forced = 0
+
 function subscribe(onChange: () => void) {
   const sync = () => {
-    apply(readTheme()) // the device flipped, or another tab chose
+    if (forced === 0) {
+      apply(readTheme()) // the device flipped, or another tab chose
+    }
     onChange()
   }
   const mq = matchMedia(DARK)
@@ -85,6 +94,13 @@ export function ThemeProvider({
   const dark = useSyncExternalStore(subscribe, systemDark, () => false)
   const theme = forcedTheme ?? stored // forcedTheme: Storybook's toolbar decides
   const resolvedTheme = theme === "system" ? (dark ? "dark" : "light") : theme
+
+  useLayoutEffect(() => {
+    if (forcedTheme) forced += 1
+    return () => {
+      if (forcedTheme) forced -= 1
+    }
+  }, [forcedTheme])
 
   const value = useMemo<ThemeState>(
     () => ({

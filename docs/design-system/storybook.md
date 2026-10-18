@@ -44,6 +44,11 @@ It also installs Playwright's Chromium, which the Vitest addon runs the stories 
 import type { StorybookConfig } from "@storybook/react-vite"
 
 const config: StorybookConfig = {
+  tags: {
+    overview: {
+      excludeFromDocsStories: true,
+    },
+  },
   stories: ["../src/**/*.mdx", "../src/**/*.stories.{ts,tsx}"],
   addons: [
     "@storybook/addon-docs",
@@ -66,6 +71,12 @@ export default config
 ```
 
 Write the story glob as `{ts,tsx}`. Storybook's usual `@(ts|tsx)` form silently matches nothing in oxlint.
+
+A story tagged `overview` stays off its docs page and still shows in the sidebar. Later component issues use that tag for an overview story:
+
+```tsx
+export const Overview: Story = { tags: ["overview"] }
+```
 
 ## .storybook/vite.config.ts
 
@@ -90,10 +101,12 @@ import { withThemeByClassName } from "@storybook/addon-themes"
 import { LayoutGroup, MotionConfig } from "motion/react"
 import { ThemeProvider } from "../src/components/theme-provider"
 import "../src/styles.css"
+import "./docs.css"
 
 // Day and Night flip .dark on <html>. Side by side renders the story twice, the second copy in a .dark wrapper.
-const withThreefold: Decorator = (Story, { globals }) => {
+const withThreefold: Decorator = (Story, { globals, viewMode }) => {
   const mode = (globals.theme as string | undefined) ?? "Day"
+  const fill = viewMode === "docs" ? "" : "min-h-svh"
   const copy = (dark: boolean) => (
     <ThemeProvider forcedTheme={dark ? "dark" : "light"}>
       <LayoutGroup id={dark ? "night" : "day"}>
@@ -104,18 +117,20 @@ const withThreefold: Decorator = (Story, { globals }) => {
   return (
     <MotionConfig reducedMotion={globals.motion === "reduced" ? "always" : "user"}>
       {mode === "Side by side" ? (
-        <div className="grid min-h-svh grid-cols-2">
-          <div className="paper-grain bg-background p-6 text-foreground">{copy(false)}</div>
-          <div className="dark paper-grain bg-background p-6 text-foreground">{copy(true)}</div>
+        <div className={`grid grid-cols-2 ${fill}`}>
+          <div className="bg-background paper-grain p-6 text-foreground">{copy(false)}</div>
+          <div className="dark bg-background paper-grain p-6 text-foreground">{copy(true)}</div>
         </div>
       ) : (
-        <div className="paper-grain min-h-svh bg-background p-6 text-foreground">{copy(mode === "Night")}</div>
+        <div className={`${fill} bg-background paper-grain p-6 text-foreground`}>{copy(mode === "Night")}</div>
       )}
     </MotionConfig>
   )
 }
 
 const preview: Preview = {
+  // Every component gets a docs page. Stories inherit this tag.
+  tags: ["autodocs"],
   decorators: [
     withThreefold,
     withThemeByClassName({ themes: { Day: "", Night: "dark", "Side by side": "" }, defaultTheme: "Day" }),
@@ -136,12 +151,51 @@ const preview: Preview = {
   },
   initialGlobals: { motion: "full" },
   // The a11y addon only warns by default ("todo"). "error" makes a violation fail the story's test.
-  parameters: { layout: "fullscreen", a11y: { test: "error" } },
+  parameters: {
+    options: {
+      storySort: {
+        // A title that isn't listed sorts after the ones that are.
+        order: [
+          "Conventions",
+          "Foundations",
+          ["Color", "Type & Shape", "Icon"],
+          "Motion",
+          ["Overview", "Spring", "Animations", "Microinteractions", "Timeline"],
+          "Sound",
+          ["Overview", "Palette", "The Key", "Events"],
+          "Actions",
+          ["Button", "Toggle", "Night Toggle", "Sound Toggle", "HoldButton", "Kbd"],
+          "Inputs",
+          ["EntryLine", "Switch", "SegmentedControl", "Slider"],
+          "Paper Objects",
+          ["PaperStar", "Jar", "PaperStrip"],
+          "Today",
+          ["CategoryTag", "DateHeading", "DayPrompt", "DayStatus"],
+          "Review",
+          ["WeekTally", "SpreadCard", "WritingCard"],
+          "Shelf and Shake",
+          ["JarShelf", "MonthCalendar", "StarPanel", "MemoryCard"],
+          "Insights",
+          ["StatTile", "Callout", "SandJar"],
+          "Overlays",
+          ["BottomSheet", "ConfirmDialog", "Toast"],
+          "Shell",
+          ["AppHeader", "AppNav", "SettingsCard"],
+        ],
+      },
+    },
+    layout: "fullscreen",
+    a11y: { test: "error" },
+  },
 }
 export default preview
 ```
 
+- **Sidebar order is declared up front,** as story titles in `parameters.options.storySort.order`. A group name is followed by the array of its pages. `"Conventions"` has no pages yet. That page is a separate issue. A later story's `title` has to match these strings, including capitals, or it sorts after the list.
+- **Docs stories use their natural height.** `min-h-svh` is applied only when `viewMode` is not `"docs"`. The canvas stays full screen.
+- **Numbered lists keep their numbers.** `.storybook/docs.css` sets `list-style: decimal` on `.sbdocs-content ol`, because Tailwind's preflight clears list markers.
 - **One `ThemeProvider` per copy.** Each copy gets its own, with `forcedTheme`, so the components that call `useTheme()` match the copy they're in. Those are the NightToggle, the Toaster, and the theme's SegmentedControl. Their own `setTheme` does nothing in Storybook, because the toolbar decides.
+- **A forced theme stays in charge.** While a `ThemeProvider` has `forcedTheme`, `subscribe` does not call `apply`. The toolbar keeps the `dark` class. The app does not pass `forcedTheme`, so a device change or a save in another tab still calls `apply`.
 - **One `LayoutGroup` per copy,** so shared `layoutId`s, like the nav swash, don't fly between the Day and Night copies.
 - **The Motion toggle covers only motion's JavaScript animations.** CSS animations follow the operating system's reduced-motion setting, so check those with the browser's rendering emulation.
 
